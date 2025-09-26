@@ -8,6 +8,14 @@
 
 body {
     font-family: Georgia, 'Times New Roman', Times, serif;
+    padding-top: 80px;
+}
+
+/* Carrusel uniforme */
+.carousel-inner img {
+    height: 500px;      /* todas las imágenes mismo alto */
+    width: 100%;
+    object-fit: cover;  /* se recortan sin deformarse */
 }
 
 img {
@@ -20,11 +28,15 @@ img {
 }
 
 .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: #c80a0a; /* Rojo fuerte */
+    height: 80px;
     display: flex;
     align-items: center;
-    min-height: 80vh;
-    background-color: #F5F5F5;
-    padding: 70px 0;
 }
 
 .menu {
@@ -87,6 +99,31 @@ img {
     background-color: #4E4B5076;
     padding: 20px;
     min-width: 400px;
+}
+
+.logo img {
+    height: 60px;  /* ajusta según lo grande que quieras tu logo */
+    width: auto;   /* mantiene proporción */
+    display: block;
+}
+
+/* Hace que el icono de usuario sea negro */
+.icon-user {
+    width: 28px;
+    height: 28px;
+    color: #111111;   /* negro */
+    margin-left: 20px; /* espacio con respecto al carrito */
+    cursor: pointer;
+}
+
+/* Asegura que no herede color azul de los links */
+.user-icon svg {
+    stroke: #111111;  /* contorno negro */
+    fill: none;
+}
+
+.user-icon img:hover {
+    transform: scale(1.1); /* pequeño efecto al pasar el mouse */
 }
 
 table {
@@ -254,16 +291,27 @@ th, td {
 }
 
 .icon-1 {
-    flex-basis: calc(33.3% - 30px );
+    flex-basis: calc(33.3% - 90px );
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 25px;
+    padding: 60px;
     background-color: #F5F5F5;
 }
 
+.icon-img img {
+    width: 300px;   /* ancho fijo */
+    height: 100px;  /* alto fijo */
+    object-fit: contain; /* mantiene proporción */
+    display: block;
+    margin-left: -20px;
+}
+
+
+
+
 .icon-txt h3 {
-    font-size: 20px;
+    font-size: 16px;
     color: #111111;
     font-family: Georgia, 'Times New Roman', Times, serif;
     text-transform: uppercase;
@@ -302,6 +350,8 @@ th, td {
 }
 
 /*ACA COMENZARE A DARLE ESTILO Y FORMA AL FOOTER*/
+
+
 .footer {
     padding: 50px 0;
     background-color: #111111;
@@ -309,8 +359,19 @@ th, td {
 
 .footer-content {
     display: flex;
+    justify-content: space-between;   /* reparte extremos */
+    align-items: flex-start;
+    gap: 40px;                        /* separación consistente */
+    flex-wrap: wrap;                  /* si no caben, pasan a otra línea */display: flex;
     justify-content: space-between;
 }
+
+/* Reset básico de listas en el footer */
+.footer .link ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+} 
 
 .link h3 {
     font-size: 18px;
