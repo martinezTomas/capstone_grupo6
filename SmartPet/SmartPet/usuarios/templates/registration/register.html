@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear cuenta</title>
+  <link rel="stylesheet" href="{% static 'css/StyleRegistro.css' %}">
+</head>
+<body class="body-registro container py-4">
+  <form method="post" autocomplete="off">
+    {% csrf_token %}
+    <h2>¡Bienvenido!</h2>
+    <p>Registrate</p>
+
+    <div class="input-wrapper">
+      {{ form.username|as_crispy_field }}
+      <img class="input-icon" src="{% static 'Img/email.svg' %}" alt="">
+    </div>
+
+    <div class="input-wrapper">
+      {{ form.first_name|as_crispy_field }}
+      <img class="input-icon" src="{% static 'Img/email.svg' %}" alt="">
+    </div>
+
+    <div class="input-wrapper">
+      {{ form.last_name|as_crispy_field }}
+      <img class="input-icon" src="{% static 'Img/email.svg' %}" alt="">
+    </div>
+
+    <div class="input-wrapper">
+      {{ form.email|as_crispy_field }}
+      <img class="input-icon" src="{% static 'Img/email.svg' %}" alt="">
+    </div>
+
+    <div class="input-wrapper">
+      {{ form.password1|as_crispy_field }}
+      <img class="input-icon" src="{% static 'Img/email.svg' %}" alt="">
+    </div>
+
+    <div class="input-wrapper">
+      {{ form.password2|as_crispy_field }}
+      <img class="input-icon" src="{% static 'Img/email.svg' %}" alt="">
+    </div>
+
+    <input class="btn-enviar" type="submit" value="Enviar">
+  </form>
+</body>
+</html>
+{% endblock %}

@@ -11,6 +11,14 @@ body {
     padding-top: 80px;
 }
 
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Ocupa el 100% de la altura de la ventana menos la altura del header y un poco del footer */
+  min-height: calc(100vh - 185px); 
+}
+
 /* Carrusel uniforme */
 .carousel-inner img {
     height: 500px;      /* todas las imágenes mismo alto */
@@ -34,7 +42,7 @@ img {
     width: 100%;
     z-index: 1000;
     background: #c80a0a; /* Rojo fuerte */
-    height: 80px;
+    height: 105px;
     display: flex;
     align-items: center;
 }
@@ -50,7 +58,7 @@ img {
 }
 
 .logo {
-    font-size: 25px;
+    font-size: 100px;
     color: #111111;
     text-transform: uppercase;
     font-weight: 800;
@@ -64,9 +72,16 @@ img {
 .menu .navbar ul li a {
     font-size: 18px;
     padding: 20px;
-    color: #111111;
+    color: #ffffff;
     display: block;
+    text-decoration: none;
 }
+
+.menu .navbar ul li a:hover {
+    color: #888888; 
+    transition: color 0.3s ease;
+}
+
 /*ACA OCULTARE EL INPUT*/
 #menu {
     display: none;
@@ -102,10 +117,12 @@ img {
 }
 
 .logo img {
-    height: 60px;  /* ajusta según lo grande que quieras tu logo */
-    width: auto;   /* mantiene proporción */
+    height: 140px;  /* antes 60px */
+    width: auto;    /* mantiene proporción */
     display: block;
+    margin-left: 10%;
 }
+
 
 /* Hace que el icono de usuario sea negro */
 .icon-user {
@@ -227,11 +244,12 @@ th, td {
 
 .btn-2 {
     display: inline-block;
-    padding: 7px 10px;
-    background-color: #111111;
+    padding: 10px 50px;
+    background-color: #e01010;
     color: #F5F5F5;
     border-radius: 5px;
     font-size: 15px;
+    text-decoration: none;
 }
 
 .products {
@@ -254,9 +272,15 @@ th, td {
 }
 
 .product {
-    text-align: center;
-    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    min-height: 550px; /* Ajusta según tus necesidades */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    box-sizing: border-box;
 }
 
 .product img {
@@ -283,80 +307,41 @@ th, td {
     font-weight: 800;
 }
 
-/*ACA COMENZARE A DARLE ESTILO Y FORMA A LOS ICONOS PEQUEÑOS DEBAJO DE LOS PRODUCTOS*/
-.icons {
-    padding: 50px 0 100px;
-    display: flex;
-    justify-content: space-between;
-}
-
-.icon-1 {
-    flex-basis: calc(33.3% - 90px );
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 60px;
-    background-color: #F5F5F5;
-}
-
-.icon-img img {
-    width: 300px;   /* ancho fijo */
-    height: 100px;  /* alto fijo */
-    object-fit: contain; /* mantiene proporción */
-    display: block;
-    margin-left: -20px;
-}
-
-
-
-
-.icon-txt h3 {
-    font-size: 16px;
-    color: #111111;
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    text-transform: uppercase;
-}
-
-.icon-txt p {
-    font-size: 16px;
-    color: #111111;
-}
-
-.blog {
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 100px;
-}
-
-.blog-1 {
-    flex-basis: calc(33.3% - 30px);
-}
-
-.blog-1 img {
-    margin-bottom: 20px;
-}
-
-.blog-1 h3 {
-    font-size: 20px;
-    color: #111111;
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    text-transform: uppercase;
-    margin-bottom: 15px;
-}
-
-.blog-1 p {
-    font-size: 16px;
-    color: #111111;
-}
-
 /*ACA COMENZARE A DARLE ESTILO Y FORMA AL FOOTER*/
 
 
 .footer {
-    padding: 50px 0;
-    background-color: #111111;
+    padding: 10px 0;
+    background-color: #f5f5f5;
+    
 }
 
+.footer-social-link {
+    font-size: 14px; /* texto más pequeño */
+    transition: color 0.3s ease;
+}
+
+.footer-social-link:hover {
+    color: #007bff !important; /* azul al pasar el mouse */
+    cursor: pointer;
+}
+
+.footer a {
+     color: #222
+}
+
+.footer .h3,.footer p {
+    color: #222 !important;
+    font-size: 16px;
+}
+
+.footer .h5 {
+    font-size: 20px;    
+}
+
+.text-white text-decoration-none{
+    color: #111111;
+}
 .footer-content {
     display: flex;
     justify-content: space-between;   /* reparte extremos */
@@ -372,6 +357,14 @@ th, td {
     margin: 0;
     padding: 0;
 } 
+/* LINEA O HR DEL FOOTER*/
+.footer-line {
+    border: none;
+    border-top: 1px solid #030303; /* línea fina y gris clara */
+    margin: 0 auto 10px auto; /* espacio debajo para separar del texto */
+    width: 80%; /* ancho ajustable */
+}
+
 
 .link h3 {
     font-size: 18px;
@@ -387,6 +380,102 @@ th, td {
     display: block;
     margin-bottom: 10px;
 }
+
+/*ACA COMENZARE A DARLE ESTILO Y FORMA AL MENU DE CADA PRODUCTO*/
+/* Contenedor principal del modal de producto */
+.product-modal-body {
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+    padding: 5px 4px 0 4px;
+}
+
+.product-modal-img {
+    width: 110px;
+    min-width: 90px;
+    height: 140px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1.5px solid #eee;
+    background: #fafbfc;
+    margin-right: 3px;
+}
+
+.product-modal-details {
+    flex: 1;
+    min-width: 220px;
+}
+
+.product-modal-title {
+    font-size: 1.13rem;
+    font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 3px;
+    color: #222;
+}
+
+.product-modal-desc {
+    font-size: 1.01rem;
+    color: #333;
+    margin-bottom: 11px;
+}
+
+.product-modal-opciones {
+    margin-bottom: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.product-modal-opciones label {
+    margin-right: 24px;
+}
+.product-modal-precio-borrado {
+    text-decoration: line-through;
+    color: #a9a9a9;
+    font-weight: normal;
+}
+.product-modal-precio-descuento {
+    color: #218838;
+    font-weight: bold;
+}
+
+/* Promo box */
+.product-modal-promo {
+    border-radius: 6px;
+    background: #f3f6fa;
+    padding: 8px 12px 9px 12px;
+    margin-bottom: 10px;
+    font-size: .94rem;
+    font-weight: 500;
+}
+.product-modal-promo strong {
+    color: #222;
+    font-size: 1.01rem;
+}
+
+/* Sección cantidad y botones */
+.product-modal-cantidad {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.product-modal-cantidad label {
+    margin-bottom: 0;
+    min-width: 65px;
+    font-size: 0.98rem;
+}
+
+.product-modal-cantidad input[type="number"] {
+    width: 48px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 1rem;
+    text-align: center;
+    border: 1px solid #c4c4c4;
+    margin-right: 4px;
+}
+
 
 /*ACA COMENZARE A DARLE ESTILO Y FORMA A LA PARTE RESPONSIVE*/
 @media (max-width:991px) {
