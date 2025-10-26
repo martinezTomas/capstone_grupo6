@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+
+<div class="container my-5">
+  <div class="row g-4">
+
+    <!-- 🧾 Formulario de Envío -->
+    <div class="col-lg-8">
+      <div class="checkout-card p-4 shadow-sm bg-white rounded-4">
+        <h4 class="mb-4 fw-bold">Envío</h4>
+
+        <form id="checkoutForm" method="post" novalidate>
+          {% csrf_token %}
+
+          <!-- Opciones de envío -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold">¿Cómo quieres recibir tu pedido?</label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="tipo_envio" id="retiroLocal" checked>
+              <label class="form-check-label" for="retiroLocal">Retiro en local <span class="text-muted">(Gratuito)</span></label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="tipo_envio" id="despachoDomicilio">
+              <label class="form-check-label" for="despachoDomicilio">Despacho a domicilio <span class="text-muted">(Envío programado)</span></label>
+            </div>
+          </div>
+
+          <!-- Datos de envío -->
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Nombre</label>
+              <input type="text" class="form-control required-field" placeholder="Ej: Juan">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Apellidos</label>
+              <input type="text" class="form-control required-field" placeholder="Ej: Pérez Soto">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">RUT</label>
+              <input type="text" class="form-control required-field" placeholder="12345678-9">
+            </div>
+
+            <!-- Región -->
+            <div class="col-md-6">
+              <label class="form-label">Región</label>
+              <select id="regionSelect" class="form-select required-field">
+                <option value="">Seleccione una región</option>
+                <option value="Arica y Parinacota">Arica y Parinacota</option>
+                <option value="Tarapacá">Tarapacá</option>
+                <option value="Antofagasta">Antofagasta</option>
+                <option value="Atacama">Atacama</option>
+                <option value="Coquimbo">Coquimbo</option>
+                <option value="Valparaíso">Valparaíso</option>
+                <option value="Metropolitana de Santiago">Metropolitana de Santiago</option>
+                <option value="Libertador General Bernardo O'Higgins">Libertador General Bernardo O'Higgins</option>
+                <option value="Maule">Maule</option>
+                <option value="Ñuble">Ñuble</option>
+                <option value="Biobío">Biobío</option>
+                <option value="La Araucanía">La Araucanía</option>
+                <option value="Los Ríos">Los Ríos</option>
+                <option value="Los Lagos">Los Lagos</option>
+                <option value="Aysén del General Carlos Ibáñez del Campo">Aysén del General Carlos Ibáñez del Campo</option>
+                <option value="Magallanes y de la Antártica Chilena">Magallanes y de la Antártica Chilena</option>
+              </select>
+            </div>
+
+            <!-- Comuna dinámica -->
+            <div class="col-md-6">
+              <label class="form-label">Comuna</label>
+              <select id="comunaSelect" class="form-select required-field">
+                <option value="">Seleccione una comuna</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Dirección</label>
+              <input type="text" class="form-control required-field" placeholder="Av. La Florida 1234">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Teléfono</label>
+              <input type="text" class="form-control required-field" placeholder="+56 9 9999 9999">
+            </div>
+          </div>
+
+          <!-- 🚀 Botón de pago -->
+          <div class="text-center mt-4">
+            <button type="button" id="btnContinuarPago" class="btn btn-lg btn-block" style="background-color:#6f42c1; color:white;">
+              Continuar al pago
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 🧾 Resumen del pedido -->
+    <div class="col-lg-4">
+      <div class="checkout-summary p-4 bg-light rounded-4 shadow-sm">
+        <h5 class="fw-bold mb-3">Resumen del pedido</h5>
+
+        {% if items %}
+          {% for item in items %}
+            <div class="d-flex justify-content-between mb-2">
+              <span>{{ item.producto.nombre }} (x{{ item.cantidad }})</span>
+              <strong>${{ item.producto.precio|floatformat:0 }}</strong>
+            </div>
+          {% endfor %}
+          <hr>
+          <div class="d-flex justify-content-between fw-semibold">
+            <span>Subtotal:</span>
+            <span>${{ total|floatformat:0 }}</span>
+          </div>
+          <div class="d-flex justify-content-between fw-semibold">
+            <span>Envío:</span>
+            <span>Gratis</span>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between fw-bold fs-5 text-success">
+            <span>Total:</span>
+            <span>${{ total|floatformat:0 }}</span>
+          </div>
+        {% else %}
+          <p>No hay productos en tu carrito.</p>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 🧩 Validación y Comunas dinámicas -->
+<script>
+// Diccionario de comunas por región
+const comunasPorRegion = {
+  "Arica y Parinacota": ["Arica", "Camarones", "Putre", "General Lagos"],
+  "Tarapacá": ["Iquique", "Alto Hospicio", "Pozo Almonte", "Camiña", "Colchane", "Huara", "Pica"],
+  "Antofagasta": ["Antofagasta", "Mejillones", "Sierra Gorda", "Taltal", "Calama", "Ollagüe", "San Pedro de Atacama"],
+  "Atacama": ["Copiapó", "Caldera", "Tierra Amarilla", "Chañaral", "Diego de Almagro", "Vallenar", "Freirina", "Huasco", "Alto del Carmen"],
+  "Coquimbo": ["La Serena", "Coquimbo", "Andacollo", "Vicuña", "Illapel", "Los Vilos", "Salamanca", "Ovalle", "Monte Patria", "Combarbalá", "Punitaqui", "Río Hurtado"],
+  "Valparaíso": ["Valparaíso", "Viña del Mar", "Concón", "Quilpué", "Villa Alemana", "Quillota", "Calera", "La Cruz", "Nogales", "San Antonio", "Cartagena", "El Quisco", "El Tabo", "Algarrobo", "Los Andes", "San Felipe", "Putaendo", "Llaillay", "Catemu", "Panquehue"],
+  "Metropolitana de Santiago": ["Santiago", "Maipú", "Puente Alto", "Las Condes", "La Florida", "Ñuñoa", "Providencia", "Recoleta", "Pudahuel", "San Miguel", "Peñalolén", "Lo Prado", "Renca", "Independencia", "Cerro Navia", "San Bernardo", "El Bosque", "Estación Central", "Huechuraba", "Macul"],
+  "Libertador General Bernardo O'Higgins": ["Rancagua", "Machalí", "Requínoa", "San Fernando", "Santa Cruz", "Graneros", "Mostazal", "Rengo", "Pichilemu", "Marchigüe", "Nancagua"],
+  "Maule": ["Talca", "Curicó", "Linares", "Cauquenes", "San Javier", "Constitución", "Parral", "Molina", "Rauco", "Romeral", "Teno", "Yerbas Buenas"],
+  "Ñuble": ["Chillán", "Chillán Viejo", "San Carlos", "Coihueco", "Bulnes", "Quirihue", "Yungay", "Cobquecura"],
+  "Biobío": ["Concepción", "Talcahuano", "Hualpén", "Coronel", "San Pedro de la Paz", "Lota", "Chiguayante", "Tomé", "Los Ángeles", "Nacimiento", "Cabrero", "Mulchén", "Santa Bárbara"],
+  "La Araucanía": ["Temuco", "Padre Las Casas", "Vilcún", "Freire", "Pucón", "Villarrica", "Angol", "Collipulli", "Traiguén", "Victoria"],
+  "Los Ríos": ["Valdivia", "Panguipulli", "Lanco", "Mariquina", "Paillaco", "La Unión", "Río Bueno", "Futrono"],
+  "Los Lagos": ["Puerto Montt", "Puerto Varas", "Castro", "Ancud", "Chonchi", "Osorno", "Purranque", "Río Negro", "Fresia", "Frutillar"],
+  "Aysén del General Carlos Ibáñez del Campo": ["Coyhaique", "Puerto Aysén", "Cisnes", "Chile Chico", "Guaitecas", "O’Higgins", "Cochrane", "Tortel"],
+  "Magallanes y de la Antártica Chilena": ["Punta Arenas", "Puerto Natales", "Porvenir", "Cabo de Hornos"]
+};
+
+// Validación de campos + actualización dinámica
+document.addEventListener("DOMContentLoaded", function () {
+  const btnContinuar = document.getElementById("btnContinuarPago");
+  const regionSelect = document.getElementById("regionSelect");
+  const comunaSelect = document.getElementById("comunaSelect");
+
+  // Cargar comunas dinámicamente
+  regionSelect.addEventListener("change", function () {
+    const region = this.value;
+    comunaSelect.innerHTML = '<option value="">Seleccione una comuna</option>';
+    if (region && comunasPorRegion[region]) {
+      comunasPorRegion[region].forEach((comuna) => {
+        const option = document.createElement("option");
+        option.value = comuna;
+        option.textContent = comuna;
+        comunaSelect.appendChild(option);
+      });
+    }
+  });
+
+  // Validación antes del pago
+  btnContinuar.addEventListener("click", function () {
+    const campos = document.querySelectorAll(".required-field");
+    let valido = true;
+
+    campos.forEach((campo) => {
+      if (campo.value.trim() === "") {
+        campo.classList.add("is-invalid");
+        valido = false;
+      } else {
+        campo.classList.remove("is-invalid");
+      }
+    });
+
+    if (!valido) {
+      alert("⚠️ Por favor completa todos los campos antes de continuar al pago.");
+      return;
+    }
+
+    // Si todo está correcto, redirige a MercadoPago
+    window.location.href = "{% url 'pago_mercadopago' %}";
+  });
+});
+</script>
+
+<!-- 🎨 Estilo para marcar campos inválidos -->
+<style>
+.is-invalid {
+  border: 2px solid #dc3545 !important;
+  background-color: #ffe6e6 !important;
+}
+</style>
+
+{% endblock %}

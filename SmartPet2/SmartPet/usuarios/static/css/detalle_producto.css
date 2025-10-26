@@ -1,0 +1,33 @@
+.producto-detalle {
+  background: linear-gradient(180deg, #fff 0%, #fdf5f5 100%);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.sombra-producto {
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(179, 0, 0, 0.2);
+  max-width: 90%;
+  transition: transform 0.3s ease;
+}
+
+.sombra-producto:hover {
+  transform: scale(1.03);
+}
+
+.btn-lg {
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .producto-detalle {
+    padding: 20px;
+    text-align: center;
+  }
+
+  .sombra-producto {
+    margin-bottom: 20px;
+  }
+}

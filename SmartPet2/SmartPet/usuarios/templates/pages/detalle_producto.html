@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/detalle_producto.css' %}">
+
+<div class="container my-5 producto-detalle">
+  <div class="row align-items-center">
+
+    <!-- Imagen del producto -->
+    <div class="col-md-6 text-center mb-4">
+      {% if producto.imagen %}
+        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="img-fluid sombra-producto rounded">
+      {% else %}
+        <img src="{% static 'Img/sin-imagen.jpg' %}" alt="Sin imagen" class="img-fluid sombra-producto rounded">
+      {% endif %}
+    </div>
+
+    <!-- Información del producto -->
+    <div class="col-md-6">
+      <h2 class="text-danger fw-bold">{{ producto.nombre }}</h2>
+      <p class="text-muted">{{ producto.descripcion }}</p>
+
+      <h3 class="text-danger fw-bold mt-3 mb-3">${{ producto.precio }}</h3>
+
+      <ul class="list-unstyled">
+        <li><strong>Categoría:</strong> {{ producto.categoria|title }}</li>
+        <li><strong>Especie:</strong> {{ producto.especie|title }}</li>
+        {% if producto.marca %}
+          <li><strong>Marca:</strong> {{ producto.marca|title }}</li>
+        {% endif %}
+        <li><strong>Peso:</strong> {{ producto.peso_kg }} kg</li>
+        <li><strong>Dimensiones:</strong> {{ producto.alto_cm }} × {{ producto.ancho_cm }} × {{ producto.largo_cm }} cm</li>
+      </ul>
+
+      <div class="mt-4">
+        <button class="btn btn-danger btn-lg me-3">Agregar al carrito 🛒</button>
+        <a href="{% url 'catalogo' %}" class="btn btn-outline-secondary btn-lg">Volver al catálogo</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Productos relacionados -->
+  {% if productos_relacionados %}
+  <div class="mt-5">
+    <h4 class="fw-bold text-danger mb-3">También te puede interesar</h4>
+    <div class="row">
+      {% for p in productos_relacionados %}
+      <div class="col-md-3 mb-4">
+        <a href="{% url 'detalle_producto' p.id %}" class="text-decoration-none text-dark">
+          <div class="card h-100">
+            <img src="{{ p.imagen.url }}" class="card-img-top" alt="{{ p.nombre }}">
+            <div class="card-body text-center">
+              <h6 class="fw-bold">{{ p.nombre }}</h6>
+              <p class="text-danger fw-bold">${{ p.precio }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

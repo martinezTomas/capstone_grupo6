@@ -1,0 +1,31 @@
+body {
+  background-color: #f8f9fa;
+}
+
+.checkout-card {
+  border: 1px solid #e0e0e0;
+  background: white;
+}
+
+.checkout-summary {
+  border: 1px solid #ddd;
+  background: #fff;
+}
+
+.checkout-summary h5 {
+  color: #333;
+}
+
+.btn-primary {
+  background-color: #6f42c1;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #563d7c;
+}
+
+.form-control, .form-select {
+  border-radius: 10px;
+  padding: 10px 15px;
+}

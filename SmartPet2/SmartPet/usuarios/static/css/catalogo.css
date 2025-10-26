@@ -1,0 +1,158 @@
+/* === CONTENEDOR PRINCIPAL === */
+.catalogo-container {
+  margin-top: 3rem;
+}
+
+.catalogo-title {
+  text-align: center;
+  color: #b30000;
+  font-weight: 800;
+  font-size: 2.2rem;
+  margin-bottom: 30px;
+  letter-spacing: 0.5px;
+}
+
+/* === FILTROS === */
+.catalogo-filtros {
+  background: linear-gradient(180deg, #fff 0%, #fdf5f5 100%);
+  border-radius: 20px;
+  padding: 25px 40px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  border-top: 5px solid #b30000;
+  transition: all 0.3s ease;
+}
+
+.catalogo-filtros:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(179, 0, 0, 0.15);
+}
+
+/* === INPUTS Y SELECTS === */
+.catalogo-filtros select,
+.catalogo-filtros input {
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.catalogo-filtros select:focus,
+.catalogo-filtros input:focus {
+  border-color: #b30000;
+  box-shadow: 0 0 8px rgba(179, 0, 0, 0.2);
+}
+
+/* === BOTONES === */
+.catalogo-filtros .btn {
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 10px 25px;
+  transition: all 0.3s ease;
+}
+
+.btn-aplicar {
+  background-color: #b30000;
+  color: white;
+  box-shadow: 0 4px 10px rgba(179, 0, 0, 0.25);
+  border: none;
+}
+
+.btn-aplicar:hover {
+  background-color: #d10000;
+  transform: translateY(-2px);
+}
+
+.btn-limpiar {
+  color: #b30000;
+  border: 2px solid #b30000;
+  background-color: white;
+}
+
+.btn-limpiar:hover {
+  background-color: #b30000;
+  color: white;
+}
+
+/* === FILTROS DE PRECIO (debajo de MARCA, alineados a la derecha) === */
+.precio-range {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: -5px;
+}
+
+.precio-range input {
+  width: 120px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  transition: all 0.2s ease;
+}
+
+.precio-range input:focus {
+  border-color: #b30000;
+  box-shadow: 0 0 6px rgba(179, 0, 0, 0.25);
+  outline: none;
+}
+
+/* === LISTADO DE PRODUCTOS === */
+.card {
+  border-radius: 18px;
+  border: none;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+  background-color: #fff;
+  border-top: 4px solid #b30000;
+}
+
+.card-title {
+  color: #b30000;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.card-text {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.card .btn {
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 992px) {
+  .catalogo-filtros {
+    padding: 20px;
+  }
+
+  .btn-aplicar, 
+  .btn-limpiar {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .precio-range {
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .precio-range input {
+    width: 100%;
+  }
+}

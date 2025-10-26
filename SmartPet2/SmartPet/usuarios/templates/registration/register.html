@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<main class="d-flex justify-content-center align-items-center py-5" style="min-height: 90vh;">
+  <div class="login-card">
+      <h2 class="text-center">¡Bienvenido!</h2>
+      <p class="text-center">Regístrate para crear tu cuenta</p>
+
+      <form method="post" autocomplete="off">
+          {% csrf_token %}
+
+          <!-- Username -->
+          <div class="mb-3">
+              <label class="form-label fw-semibold">Usuario</label>
+              <div class="input-group">
+                  <span class="input-group-text">
+                      <img src="{% static 'Img/email.svg' %}" alt="user icon" style="width:20px;">
+                  </span>
+                  <input type="text" name="username" id="id_username" class="form-control" placeholder="Ej: juanperez123" required>
+              </div>
+          </div>
+
+          <!-- First name -->
+          <div class="mb-3">
+              <label class="form-label fw-semibold">Nombre</label>
+              <div class="input-group">
+                  <span class="input-group-text">
+                      <img src="{% static 'Img/email.svg' %}" alt="name icon" style="width:20px;">
+                  </span>
+                  <input type="text" name="first_name" id="id_first_name" class="form-control" placeholder="Tu nombre" required>
+              </div>
+          </div>
+
+          <!-- Last name -->
+          <div class="mb-3">
+              <label class="form-label fw-semibold">Apellido</label>
+              <div class="input-group">
+                  <span class="input-group-text">
+                      <img src="{% static 'Img/email.svg' %}" alt="lastname icon" style="width:20px;">
+                  </span>
+                  <input type="text" name="last_name" id="id_last_name" class="form-control" placeholder="Tu apellido" required>
+              </div>
+          </div>
+
+          <!-- Email -->
+          <div class="mb-3">
+              <label class="form-label fw-semibold">Correo electrónico</label>
+              <div class="input-group">
+                  <span class="input-group-text">
+                      <img src="{% static 'Img/email.svg' %}" alt="email icon" style="width:20px;">
+                  </span>
+                  <input type="email" name="email" id="id_email" class="form-control" placeholder="ejemplo@correo.com" required>
+              </div>
+          </div>
+
+          <!-- Password -->
+          <div class="mb-3">
+              <label class="form-label fw-semibold">Contraseña</label>
+              <div class="input-group">
+                  <span class="input-group-text">
+                      <img src="{% static 'Img/contraseña.svg' %}" alt="password icon" style="width:20px;">
+                  </span>
+                  <input type="password" name="password1" id="id_password1" class="form-control" placeholder="********" required>
+              </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="mb-4">
+              <label class="form-label fw-semibold">Confirmar contraseña</label>
+              <div class="input-group">
+                  <span class="input-group-text">
+                      <img src="{% static 'Img/contraseña.svg' %}" alt="password confirm icon" style="width:20px;">
+                  </span>
+                  <input type="password" name="password2" id="id_password2" class="form-control" placeholder="********" required>
+              </div>
+          </div>
+
+          <button type="submit" class="btn-login">Registrarse</button>
+
+          <div class="text-center text-register mt-3">
+              <p>¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión</a></p>
+          </div>
+      </form>
+  </div>
+</main>
+{% endblock %}

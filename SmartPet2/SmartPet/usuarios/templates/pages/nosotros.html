@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/nosotros.css' %}">
+
+<section class="hero-nosotros text-white text-center d-flex flex-column justify-content-center align-items-center">
+  <h1 class="display-4 fw-bold">Nuestra Historia</h1>
+  <p class="lead mt-3 w-75 mx-auto">
+    SmartPet nació del esfuerzo y la esperanza de una pareja de adultos mayores que, en medio de la crisis económica 
+    y la incertidumbre de la pandemia, decidió reinventarse. Lo que comenzó como un pequeño emprendimiento familiar, 
+    buscando estabilidad y propósito, se transformó en un proyecto que hoy inspira a otros a creer en las segundas oportunidades.
+  </p>
+</section>
+
+<main class="container my-5">
+
+  <!-- Inicios del negocio -->
+  <section class="row align-items-center mb-5 py-4">
+    <div class="col-md-6 text-center">
+      <img src="{% static 'Img/nosotros1.jpg' %}" alt="Inicios de SmartPet" class="img-fluid rounded-4 shadow-lg">
+    </div>
+    <div class="col-md-6">
+      <h2 class="fw-bold text-danger mb-3">Cómo Empezó Todo</h2>
+      <p class="fs-5">
+        Durante los meses más duros de la pandemia, cuando muchos comercios debieron cerrar y las familias enfrentaban tiempos difíciles,
+        nació la idea de SmartPet. Esta pareja, impulsada por su amor por los animales y su deseo de aportar a la comunidad,
+        decidió abrir un pequeño local de productos para mascotas, con la visión de ofrecer calidad sin que el precio fuera una barrera.
+      </p>
+      <p class="fs-5">
+        Lo que empezó con unos pocos productos y muchas ganas, se convirtió en un punto de encuentro para dueños de mascotas,
+        rescatistas y vecinos, donde además de vender, se compartían historias, consejos y solidaridad.
+      </p>
+    </div>
+  </section>
+
+  <!-- Nuestra Misión -->
+  <section class="row align-items-center flex-md-row-reverse mb-5 py-4 bg-light rounded-4 shadow-sm">
+    <div class="col-md-6 text-center">
+      <img src="{% static 'Img/nosotros2.jpg' %}" alt="Nuestra Misión" class="img-fluid rounded-4 shadow-lg">
+    </div>
+    <div class="col-md-6">
+      <h2 class="fw-bold text-danger mb-3">Nuestra Misión</h2>
+      <p class="fs-5">
+        En SmartPet creemos que todos merecen acceder a productos de calidad para sus mascotas. Nuestra misión es 
+        hacer feliz a la comunidad y a sus animales, impulsando además a pequeños proveedores y emprendedores locales
+        que comparten nuestra pasión por el bienestar animal.
+      </p>
+      <p class="fs-5">
+        Nos enorgullece ser parte de una red de personas que, desde sus propios hogares y negocios, aportan al crecimiento
+        de un ecosistema más justo, sostenible y solidario.
+      </p>
+    </div>
+  </section>
+
+  <!-- Futuro y visión -->
+  <section class="text-center py-5 bg-danger text-white rounded-4 shadow-lg">
+    <h2 class="fw-bold mb-3">Mirando Hacia el Futuro</h2>
+    <p class="fs-5 w-75 mx-auto">
+      Hoy, SmartPet da un nuevo paso hacia la digitalización. Buscamos ampliar nuestro alcance a todo Chile a través de esta 
+      plataforma web, conectando a miles de hogares con productos accesibles, confiables y cercanos.  
+      <br><br>
+      Más que una tienda, somos una comunidad que demuestra que los sueños no tienen edad y que, con amor, trabajo y propósito, 
+      se puede construir algo que marque la diferencia.
+    </p>
+    <a href="{% url 'register' %}" class="btn btn-light fw-bold mt-3 px-4">Únete a nuestra comunidad</a>
+  </section>
+</main>
+
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active" data-bs-interval="1500"><img src="{% static 'Img/carrusel1.jpg' %}" class="d-block w-100" alt="..."></div>
+            <div class="carousel-item" data-bs-interval="1500"><img src="{% static 'Img/carrusel2.jpg' %}" class="d-block w-100" alt="..."></div>
+            <div class="carousel-item" data-bs-interval="1500"><img src="{% static 'Img/carrusel3.jpg' %}" class="d-block w-100" alt="..."></div>
+        </div>
+    </div>
+
+    <section class="ofert container">
+        <div class="ofert-1"><div class="ofert-img"><img src="{% static 'Img/f1.png' %}" alt=""></div><div class="ofert-txt"><h3>Fit Formula Cachorro 10 KG</h3><a href="#" class="btn-2">Información</a></div></div>
+        <div class="ofert-1"><div class="ofert-img"><img src="{% static 'Img/f2.png' %}" alt=""></div><div class="ofert-txt"><h3>Fit Fórmula Gato 10 KG</h3><a href="#" class="btn-2">Información</a></div></div>
+        <div class="ofert-1"><div class="ofert-img"><img src="{% static 'Img/f3.png' %}" alt=""></div><div class="ofert-txt"><h3>Fit Formula Adulto Light 20 KG</h3><a href="#" class="btn-2">Información</a></div></div>
+    </section>
+
+    <main class="products container" id="lista-1">
+        <h2>Productos</h2>
+        <div class="product-content">
+            {% for producto in productos %}
+            <div class="product">
+                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
+                <div class="product-txt">
+                    <h3>{{ producto.nombre }}</h3>
+                    <p>{{ producto.descripcion }}</p>
+                    <p class="precio">${{ producto.precio|floatformat:0 }}</p>
+                    <a href="#" class="agregar-carrito btn-2" data-id="{{ producto.id }}">Ver detalles</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+{% endblock %}

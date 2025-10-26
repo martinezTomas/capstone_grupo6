@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4 text-center fw-bold">Gestión de Productos 🧑‍💻</h2>
+
+    {# Mostrar mensajes de éxito/error #}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {# Contenedor de productos estilo catálogo #}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+        {% for producto in productos %}
+        <div class="col">
+            <div class="card h-100 shadow-sm product-card-admin"> {# Añadida clase 'product-card-admin' para posible estilo específico #}
+                {% if producto.imagen %}
+                    <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <span class="text-muted">Sin imagen</span>
+                    </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ producto.nombre }}</h5>
+                    <p class="card-text text-success fw-bold">${{ producto.precio|floatformat:0 }}</p>
+                    <p class="card-text small text-muted">Stock: {{ producto.stock }}</p>
+
+                    {# Botones de acción al final de la tarjeta #}
+                    <div class="mt-auto d-flex justify-content-end gap-2">
+                        <a href="{% url 'modificar_producto_admin' pk=producto.id %}" class="btn btn-sm btn-warning" title="Modificar">
+                            <i class="fas fa-pencil-alt"></i> Modificar
+                        </a>
+                        <a href="{% url 'eliminar_producto_admin' pk=producto.id %}" class="btn btn-sm btn-danger" title="Eliminar">
+                           <i class="fas fa-trash-alt"></i> Eliminar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+            <div class="col-12">
+                <p class="text-center text-muted fs-5 mt-5">No hay productos registrados todavía.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    {# Botón para crear nuevo producto al final #}
+    <div class="text-center">
+        <a href="{% url 'crear_producto_admin' %}" class="btn btn-success btn-lg">
+            <i class="fas fa-plus me-2"></i> Crear Nuevo Producto
+        </a>
+    </div>
+
+</div>
+{# Asegúrate de tener Font Awesome cargado en tu base.html para los íconos #}
+{# Ejemplo: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> #}
+{% endblock %}
