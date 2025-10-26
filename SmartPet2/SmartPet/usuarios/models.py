@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Producto(models.Model):
+    # --- Opciones de elección ---
     CATEGORIAS = [
         ('alimento', 'Alimento'),
         ('accesorio', 'Accesorio'),
@@ -38,27 +39,69 @@ class Producto(models.Model):
         ('calmantes', 'Productos Calmantes'),
     ]
 
+    # --- Datos principales ---
     nombre = models.CharField(max_length=200)
     descripcion = models.TextField()
     precio = models.DecimalField(max_digits=10, decimal_places=0)
     stock = models.PositiveIntegerField(default=0)
     imagen = models.ImageField(upload_to='productos/')
 
-    # Campos para filtrar
-    categoria = models.CharField(max_length=100, choices=CATEGORIAS, default='alimento')
-    especie = models.CharField(max_length=50, choices=ESPECIES, default='perro')
-    subcategoria = models.CharField(max_length=100, choices=SUBCATEGORIAS, blank=True, null=True)
-    marca = models.CharField(max_length=100, blank=True, null=True)
+    # --- Clasificación del producto ---
+    categoria = models.CharField(
+        max_length=100,
+        choices=CATEGORIAS,
+        default='alimento'
+    )
+    subcategoria = models.CharField(
+        max_length=100,
+        choices=SUBCATEGORIAS,
+        blank=True,
+        null=True
+    )
+    especie = models.CharField(
+        max_length=50,
+        choices=ESPECIES,
+        default='perro'
+    )
+    marca = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
 
-    # Campos de envío (Chilexpress)
-    alto_cm = models.PositiveIntegerField(default=10, help_text="Alto del paquete en cm")
-    ancho_cm = models.PositiveIntegerField(default=10, help_text="Ancho del paquete en cm")
-    largo_cm = models.PositiveIntegerField(default=10, help_text="Largo del paquete en cm")
-    peso_kg = models.DecimalField(max_digits=5, decimal_places=2, default=1.0, help_text="Peso del paquete en kg")
+    # --- Datos de envío (para Chilexpress) ---
+    alto_cm = models.PositiveIntegerField(
+        default=10,
+        help_text="Altura del paquete en cm"
+    )
+    ancho_cm = models.PositiveIntegerField(
+        default=10,
+        help_text="Ancho del paquete en cm"
+    )
+    largo_cm = models.PositiveIntegerField(
+        default=10,
+        help_text="Largo del paquete en cm"
+    )
+    peso_kg = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=1.0,
+        help_text="Peso del paquete en kg"
+    )
 
+    # --- Métodos útiles ---
     def __str__(self):
+        """ Devuelve una representación legible del producto. """
         return f"{self.nombre} ({self.get_especie_display()})"
 
+    def dimensiones_str(self):
+        """ Retorna una cadena legible con las dimensiones. """
+        return f"{self.alto_cm}x{self.ancho_cm}x{self.largo_cm} cm"
+
+    class Meta:
+        verbose_name = "Producto"
+        verbose_name_plural = "Productos"
+        ordering = ['nombre']
 # NOTA IMPORTANTE:
 # No es necesario crear un campo 'idproducto'. Django crea un campo 'id'
 # numérico y automático para cada modelo, que es la llave primaria.

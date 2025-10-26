@@ -2,18 +2,32 @@
 // VERSIÓN FINAL Y CORRECTA - NO USA localStorage, USA fetch() para hablar con Django
 
 document.addEventListener("DOMContentLoaded", function () {
-
   console.log("✅ menuproducto.js (versión final DB) cargado correctamente");
 
   document.querySelectorAll('.agregar-carrito').forEach(function (btn) {
     btn.addEventListener('click', function (event) {
       event.preventDefault();
 
+      // 1) Intento catálogo: .product con img/h3/p
       let productCard = btn.closest('.product');
-      let img = productCard.querySelector('img').src;
-      let title = productCard.querySelector('h3').innerText;
-      let desc = productCard.querySelector('p').innerText;
-      let id = btn.getAttribute('data-id');
+      let img, title, desc;
+
+      if (productCard) {
+        const imgEl = productCard.querySelector('img');
+        const titleEl = productCard.querySelector('h3');
+        const descEl = productCard.querySelector('p');
+
+        img = imgEl ? imgEl.src : '';
+        title = titleEl ? titleEl.innerText : '';
+        desc = descEl ? descEl.innerText : '';
+      } else {
+        // 2) Detalle: usamos data-* del botón
+        img = btn.dataset.img || '';
+        title = btn.dataset.title || '';
+        desc = btn.dataset.desc || '';
+      }
+
+      const id = btn.getAttribute('data-id');
 
       // --- Llenamos el contenido del modal ---
       let modalBody = document.getElementById('modal-body-content');
@@ -36,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
         </div>`;
 
-      // --- Asignamos funciones a los botones de cantidad (+ y -) ---
+      // +/- cantidad
       const input = document.getElementById(`cant-${id}`);
       document.getElementById(`menos-${id}`).onclick = () => {
         if (Number(input.value) > 1) input.value = Number(input.value) - 1;
@@ -45,27 +59,28 @@ document.addEventListener("DOMContentLoaded", function () {
         input.value = Number(input.value) + 1;
       };
 
-      // --- Mostramos el modal ---
-      let modal = new bootstrap.Modal(document.getElementById('productoModal'));
+      // Mostrar modal
+      const modalEl = document.getElementById('productoModal');
+      const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
       modal.show();
 
-      // --- Lógica para el botón "Añadir al carrito" DENTRO del modal ---
-      const btnAdd = document.querySelector('#productoModal .btn.btn-primary');
+      // Evitar duplicar listeners en el botón primario
+      const btnAdd = modalEl.querySelector('.btn.btn-primary');
       const nuevoBtnAdd = btnAdd.cloneNode(true);
       btnAdd.parentNode.replaceChild(nuevoBtnAdd, btnAdd);
-      
+
+      // Click en "Añadir al carrito"
       nuevoBtnAdd.addEventListener('click', () => {
         const cantidad = Number(document.getElementById(`cant-${id}`).value);
         const pesoSeleccionado = document.querySelector(`input[name="peso-${id}"]:checked`).value;
-        
+
         const productoParaEnviar = { id: id, cantidad: cantidad, peso: `${pesoSeleccionado} KG` };
 
-        // --- ENVIAMOS LOS DATOS A DJANGO ---
         fetch('/carrito/agregar/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': CSRF_TOKEN 
+            'X-CSRFToken': CSRF_TOKEN   // asegúrate de definir CSRF_TOKEN en base.html
           },
           body: JSON.stringify(productoParaEnviar)
         })
@@ -91,12 +106,12 @@ document.addEventListener("DOMContentLoaded", function () {
   function mostrarAlerta(mensaje) {
     let cont = document.getElementById('alert-container-global');
     if (!cont) {
-        cont = document.createElement('div');
-        cont.id = 'alert-container-global';
-        Object.assign(cont.style, {
-            position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: '3000'
-        });
-        document.body.appendChild(cont);
+      cont = document.createElement('div');
+      cont.id = 'alert-container-global';
+      Object.assign(cont.style, {
+        position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: '3000'
+      });
+      document.body.appendChild(cont);
     }
     const alerta = document.createElement('div');
     alerta.className = 'alert alert-success shadow';

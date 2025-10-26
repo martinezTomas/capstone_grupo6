@@ -41,27 +41,90 @@ class RegistroUserForm(UserCreationForm):
         self.helper.add_input(Submit('submit', 'Crear cuenta', css_class='btn-enviar'))  # [web:85]
 
 
+from django import forms
+from .models import Producto
+
+from django import forms
+from .models import Producto
+
 class ProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
-        
-        # Usamos los nombres de campo que están en nuestro modelo actualizado
-        fields = ['nombre', 'descripcion', 'precio', 'stock', 'imagen']
-        
+        fields = [
+            'nombre',
+            'descripcion',
+            'precio',
+            'stock',
+            'imagen',
+            'categoria',
+            'subcategoria',
+            'especie',
+            'marca',
+            'alto_cm',
+            'ancho_cm',
+            'largo_cm',
+            'peso_kg',
+        ]
+
         labels = {
             'nombre': 'Nombre del Producto',
             'descripcion': 'Descripción',
-            'precio': 'Precio',
+            'precio': 'Precio ($)',
             'stock': 'Stock Disponible',
-            'imagen': 'Imagen del Producto'
+            'imagen': 'Imagen del Producto',
+            'categoria': 'Categoría',
+            'subcategoria': 'Subcategoría',
+            'especie': 'Especie',
+            'marca': 'Marca',
+            'alto_cm': 'Altura (cm)',
+            'ancho_cm': 'Ancho (cm)',
+            'largo_cm': 'Largo (cm)',
+            'peso_kg': 'Peso (kg)',
         }
-        
+
         widgets = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Bravery Salmon'}),
-            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'precio': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 66990'}),
-            'stock': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 50'}),
-            'imagen': forms.FileInput(attrs={'class': 'form-control'})
+            'nombre': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: Bravery Salmon Adulto'
+            }),
+            'descripcion': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Descripción breve del producto...'
+            }),
+            'precio': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: 66990'
+            }),
+            'stock': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: 50'
+            }),
+            'imagen': forms.FileInput(attrs={'class': 'form-control'}),
+            'categoria': forms.Select(attrs={'class': 'form-select'}),
+            'subcategoria': forms.Select(attrs={'class': 'form-select'}),
+            'especie': forms.Select(attrs={'class': 'form-select'}),
+            'marca': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: Fit Formula, Bravery...'
+            }),
+            'alto_cm': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: 30'
+            }),
+            'ancho_cm': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: 20'
+            }),
+            'largo_cm': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: 15'
+            }),
+            'peso_kg': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'step': '0.1',
+                'placeholder': 'Ej: 1.2'
+            }),
         }
 
 

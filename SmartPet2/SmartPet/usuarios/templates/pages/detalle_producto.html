@@ -18,24 +18,42 @@
 
     <!-- Información del producto -->
     <div class="col-md-6">
-      <h2 class="text-danger fw-bold">{{ producto.nombre }}</h2>
-      <p class="text-muted">{{ producto.descripcion }}</p>
+      <div class="product">
+        <!-- Ocultamos la imagen duplicada para el JS -->
+        <img src="{% if producto.imagen %}{{ producto.imagen.url }}{% else %}{% static 'Img/sin-imagen.jpg' %}{% endif %}" 
+             alt="{{ producto.nombre }}" class="d-none">
 
-      <h3 class="text-danger fw-bold mt-3 mb-3">${{ producto.precio }}</h3>
+        <div class="product-txt">
+          <h3 class="text-danger fw-bold">{{ producto.nombre }}</h3>
+          <p class="text-muted">{{ producto.descripcion }}</p>
 
-      <ul class="list-unstyled">
-        <li><strong>Categoría:</strong> {{ producto.categoria|title }}</li>
-        <li><strong>Especie:</strong> {{ producto.especie|title }}</li>
-        {% if producto.marca %}
-          <li><strong>Marca:</strong> {{ producto.marca|title }}</li>
-        {% endif %}
-        <li><strong>Peso:</strong> {{ producto.peso_kg }} kg</li>
-        <li><strong>Dimensiones:</strong> {{ producto.alto_cm }} × {{ producto.ancho_cm }} × {{ producto.largo_cm }} cm</li>
-      </ul>
+          <p class="text-danger fw-bold fs-4">${{ producto.precio }}</p>
 
-      <div class="mt-4">
-        <button class="btn btn-danger btn-lg me-3">Agregar al carrito 🛒</button>
-        <a href="{% url 'catalogo' %}" class="btn btn-outline-secondary btn-lg">Volver al catálogo</a>
+          <ul class="list-unstyled">
+            <li><strong>Categoría:</strong> {{ producto.categoria|title }}</li>
+            <li><strong>Especie:</strong> {{ producto.especie|title }}</li>
+            {% if producto.marca %}
+              <li><strong>Marca:</strong> {{ producto.marca|title }}</li>
+            {% endif %}
+            <li><strong>Peso:</strong> {{ producto.peso_kg }} kg</li>
+            <li><strong>Dimensiones:</strong> {{ producto.alto_cm }} × {{ producto.ancho_cm }} × {{ producto.largo_cm }} cm</li>
+          </ul>
+
+          <div class="mt-4">
+            <a href="#"
+               class="btn btn-danger btn-lg me-3 agregar-carrito"
+               data-id="{{ producto.id }}"
+               data-img="{% if producto.imagen %}{{ producto.imagen.url }}{% else %}{% static 'Img/sin-imagen.jpg' %}{% endif %}"
+               data-title="{{ producto.nombre|escapejs }}"
+               data-desc="{{ producto.descripcion|default_if_none:''|escapejs }}">
+              Ver detalles 🛒
+            </a>
+
+            <a href="{% url 'catalogo' %}" class="btn btn-outline-secondary btn-lg">
+              Volver al catálogo
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -48,7 +66,7 @@
       {% for p in productos_relacionados %}
       <div class="col-md-3 mb-4">
         <a href="{% url 'detalle_producto' p.id %}" class="text-decoration-none text-dark">
-          <div class="card h-100">
+          <div class="card h-100 shadow-sm">
             <img src="{{ p.imagen.url }}" class="card-img-top" alt="{{ p.nombre }}">
             <div class="card-body text-center">
               <h6 class="fw-bold">{{ p.nombre }}</h6>
@@ -61,6 +79,23 @@
     </div>
   </div>
   {% endif %}
+</div>
+
+<!-- Modal global -->
+<div class="modal fade" id="productoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Detalles del producto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body" id="modal-body-content"><!-- JS inyecta contenido --></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary">Añadir al carrito</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 {% endblock %}
