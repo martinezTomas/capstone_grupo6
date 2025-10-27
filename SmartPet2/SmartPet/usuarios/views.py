@@ -75,7 +75,8 @@ def nosotros_view(request):
 
 # --- Página catálogo ---
 def catalogo_view(request):
-    productos = Producto.objects.all()
+    # ✅ Solo productos visibles
+    productos = Producto.objects.filter(visible=True)
 
     # Leer los parámetros GET del formulario
     categoria = request.GET.get('categoria')
@@ -157,12 +158,12 @@ def modificar_producto_admin(request, pk):
 
 @staff_member_required
 def eliminar_producto_admin(request, pk):
-    """ Muestra confirmación y elimina un producto. """
+    """Oculta un producto en lugar de eliminarlo físicamente."""
     producto = get_object_or_404(Producto, pk=pk)
     if request.method == 'POST':
-        nombre_producto = producto.nombre # Guarda el nombre antes de borrar
-        producto.delete()
-        messages.success(request, f'🗑️ Producto "{nombre_producto}" eliminado.')
+        producto.visible = False  # solo lo ocultamos
+        producto.save()
+        messages.success(request, f'👁️ Producto "{producto.nombre}" ocultado del catálogo.')
         return redirect('lista_productos_admin')
 
     context = {'producto': producto}
@@ -612,3 +613,13 @@ def detalle_producto(request, producto_id):
         'producto': producto,
         'productos_relacionados': productos_relacionados
     })
+
+@staff_member_required
+def activar_producto_admin(request, pk):
+    """Reactiva un producto oculto para que vuelva a mostrarse en el catálogo."""
+    producto = get_object_or_404(Producto, pk=pk)
+    producto.visible = True  # volvemos a activar
+    producto.save()
+    messages.success(request, f'✅ Producto "{producto.nombre}" ahora es visible en el catálogo.')
+    return redirect('lista_productos_admin')
+

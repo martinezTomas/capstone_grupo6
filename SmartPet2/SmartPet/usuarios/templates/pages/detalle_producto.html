@@ -46,7 +46,7 @@
                data-img="{% if producto.imagen %}{{ producto.imagen.url }}{% else %}{% static 'Img/sin-imagen.jpg' %}{% endif %}"
                data-title="{{ producto.nombre|escapejs }}"
                data-desc="{{ producto.descripcion|default_if_none:''|escapejs }}">
-              Ver detalles 🛒
+              Agregar al Carrito 🛒
             </a>
 
             <a href="{% url 'catalogo' %}" class="btn btn-outline-secondary btn-lg">

@@ -33,6 +33,7 @@ urlpatterns = [
     path('gestion/productos/crear/', views.crear_producto_admin, name='crear_producto_admin'),
     path('gestion/productos/modificar/<int:pk>/', views.modificar_producto_admin, name='modificar_producto_admin'),
     path('gestion/productos/eliminar/<int:pk>/', views.eliminar_producto_admin, name='eliminar_producto_admin'),
+    path('productos/<int:pk>/activar/', views.activar_producto_admin, name='activar_producto_admin'),
     
 
 

@@ -87,8 +87,12 @@ class Producto(models.Model):
         decimal_places=2,
         default=1.0,
         help_text="Peso del paquete en kg"
+    
     )
-
+    visible = models.BooleanField(
+        default=True, 
+        help_text="Define si el producto es visible en el catálogo"
+        )
     # --- Métodos útiles ---
     def __str__(self):
         """ Devuelve una representación legible del producto. """
