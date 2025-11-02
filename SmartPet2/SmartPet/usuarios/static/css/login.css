@@ -1,0 +1,62 @@
+/* === LOGIN MODERNO SMARTPET === */
+body {
+  background-color: #f8f9fa;
+}
+
+.login-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+  max-width: 420px;
+  width: 100%;
+}
+
+.login-card h2 {
+  color: #d92332;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.login-card p {
+  color: #6c757d;
+  font-size: 15px;
+}
+
+.input-group-text {
+  background-color: #f1f3f5;
+  border: none;
+  border-radius: 8px 0 0 8px;
+}
+
+input.form-control {
+  border: none;
+  border-radius: 0 8px 8px 0;
+  box-shadow: inset 0 0 0 1px #dee2e6;
+  padding: 12px 14px;
+}
+
+input.form-control:focus {
+  outline: none;
+  border-color: #6c63ff;
+  box-shadow: 0 0 0 0.25rem rgba(108, 99, 255, 0.25);
+}
+
+.btn-login {
+  background-color: #6c63ff;
+  color: white;
+  font-weight: 600;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  width: 100%;
+}
+
+.btn-login:hover {
+  background-color: #5b55e0;
+}
+
+.text-register a {
+  color: #6c63ff;
+  font-weight: 500;
+}

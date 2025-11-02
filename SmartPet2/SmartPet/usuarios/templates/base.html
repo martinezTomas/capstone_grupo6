@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/StyleIndex.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'Img/logo.ico' %}">
+    <title>SmartPet</title>
+
+    <script>
+        const CSRF_TOKEN = '{{ csrf_token }}';
+    </script>
+</head>
+<body>
+    <header class="header">
+        <div class="menu container">
+            <a href="{% url 'index' %}" class="logo"><img src="{% static 'Img/Logo.png' %}" alt="Mi logo"></a>
+            <input type="checkbox" id="menu"><label for="menu"><img src="{% static 'Img/menu.png' %}" class="menu-icono" alt="menu"></label>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="{% url 'index' %}">Inicio</a></li>
+                    <li><a href="{% url 'nosotros' %}">Nosotros</a></li>
+                    <li><a href="{% url 'catalogo' %}">Catalogo</a></li>
+                    <li><a href="#footer">Contacto</a></li>
+                    <li><a href="{% url 'register' %}">Registrarse</a></li>
+                    {% if user.is_staff %}
+                    <li><a class="dropdown-item" href="{% url 'lista_productos_admin' %}">Gestionar Productos</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div>
+                <ul>
+                    {% if user.is_authenticated %}
+                    <li class="submenu">
+                        <a href="{% url 'carrito' %}"><img src="{% static 'Img/car.svg' %}" id="img-carrito" alt="carrito"><span id="contador-carrito" class="badge bg-danger rounded-pill" style="position: absolute; top: 0px; right: 0px; font-size: 0.7em;">0</span></a>
+                        <div id="carrito">
+                            <table id="lista-carrito"><thead><tr><th>Img</th><th>Nombre</th><th>Precio</th></tr></thead><tbody></tbody><tfoot><tr><td colspan="2" class="text-end fw-bold">Total:</td><td id="total-minicart" class="fw-bold">$0</td></tr></tfoot></table>
+                            <div class="d-grid gap-2"><a href="{% url 'carrito' %}" class="btn btn-dark btn-sm">Ir al Carrito</a><button id="vaciar-minicart" class="btn btn-outline-danger btn-sm">Vaciar Carrito</button></div>
+                        </div>
+                    </li>
+                    <li>
+                        <form action="{% url 'logout' %}" method="post" class="d-inline">{% csrf_token %}<button type="submit" class="btn btn-link text-dark text-decoration-none p-0">Cerrar sesión</button></form>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a href="{% url 'login' %}" class="user-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:28px; height:28px;"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" /></svg></a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    {% block content %}
+    {% endblock %}
+    
+    <footer id="footer" class="footer">
+        <div class="container-fluid">
+            <div class="row p-5 p-2 text-white">
+                <div class="col-xs-12 col-md-6 col-lg-3">
+                    <p class="h5">SMARTPET</p>
+                    <p>Av. El Conquistador 741, Maipú, Santiago</p>
+                </div>
+                <div class="col-xs-12 col-md-6 col-lg-3" style="margin-left: 8cm; margin-right: 3cm;">
+                    <p class="h5">Politicas</p>
+                    <div class="mb-2"><a class="text-decoration-none" style="color: black;">Politicas de Privacidad</a></div>
+                    <div class="mb-2"><a class="text-decoration-none" style="color: black;">Politicas de Devolución</a></div>
+                    <div class="mb-2"><a class="text-decoration-none" style="color: black;">Terminos y servicio</a></div>
+                    <div class="mb-2"><a class="text-decoration-none" style="color: black;">Politicas de Envío</a></div>
+                </div>
+                <div class="col-xs-12 col-md-6 col-lg-3">
+                    <p class="h5 footer-title">Redes Sociales</p>
+                    <div class="mb-2"><a class="footer-social-link text-dark text-decoration-none d-inline-block align-middle" href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer"><img src="{% static 'Img/Facebook.png' %}" alt="Facebook Logo" width="25px" height="25px" style="margin-right: 10px;"> Facebook</a></div>
+                    <div class="mb-2"><a class="footer-social-link text-dark text-decoration-none d-inline-block align-middle" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer"><img src="{% static 'Img/Instagram-Icon.png' %}" alt="Instagram Logo" width="25px" height="25px" style="margin-right: 10px;"> Instagram</a></div>
+                    <div class="mb-2"><a class="footer-social-link text-dark text-decoration-none d-inline-block align-middle" href="https://x.com/home?lang=es" target="_blank" rel="noopener noreferrer"><img src="{% static 'Img/Twitter-logo.png' %}" alt="Twitter Logo" width="25px" height="25px" style="margin-right: 10px;"> Twitter</a></div>
+                    <div class="mb-2"><a class="footer-social-link text-dark text-decoration-none d-inline-block align-middle" href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox" target="_blank" rel="noopener noreferrer"><img src="{% static 'Img/correo-icon.png' %}" alt="Gmail Logo" width="25px" height="25px" style="margin-right: 10px;"> Gmail</a></div>
+                </div>
+                <div class="col-x-12 pt-2">
+                    <hr class="footer-line">
+                    <div class="footer-logo" style="text-align: center; margin-top: 10px;">
+                        <img src="{% static 'Img/Logo.png' %}" alt="SmartPet Logo" style="height: 80px; width: auto;">
+                    </div>
+                    <p class="text-white text-center"> SmartPet - Todos los derechos © 2025</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="productoModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Detalles del producto</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="modal-body-content"></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button><button type="button" class="btn btn-primary">Añadir al carrito</button></div></div></div></div>
+    <div class="modal fade" id="infoProductoModal" tabindex="-1"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/menuproducto.js' %}"></script>
+    <script src="{% static 'js/carrito.js' %}"></script>
+    <script src="{% static 'js/minicart.js' %}"></script>
+</body>
+</html>

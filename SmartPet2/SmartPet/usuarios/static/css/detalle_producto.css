@@ -1,0 +1,13 @@
+/* === Ajuste del alto y eliminación del espacio inferior === */
+.producto-detalle .row.align-items-center {
+  align-items: flex-start !important;
+}
+
+.producto-detalle .product {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.producto-detalle .mt-4 {
+  margin-bottom: 0 !important;
+}

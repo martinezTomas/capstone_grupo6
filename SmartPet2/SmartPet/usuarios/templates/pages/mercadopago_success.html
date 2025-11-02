@@ -1,0 +1,30 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block content %}
+<div class="container text-center my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+
+      <h1>✅ ¡Tu pago fue aprobado!</h1>
+
+      <p class="lead">
+        Muchas gracias por tu compra, {{ request.user.username }}.
+      </p>
+
+      {% if pedido %}
+        <div class="alert alert-success">
+          Hemos confirmado tu Pedido N°: <strong>#{{ pedido.id }}</strong>
+        </div>
+      {% endif %}
+
+      <p>Hemos actualizado tu pedido y descontado el stock. Ya puedes volver al inicio.</p>
+
+      <a href="{% url 'index' %}" class="btn btn-primary btn-lg">
+        Volver al inicio
+      </a>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

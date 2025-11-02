@@ -1,0 +1,597 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+}
+
+body {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    padding-top: 80px;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Ocupa el 100% de la altura de la ventana menos la altura del header y un poco del footer */
+  min-height: calc(100vh - 185px); 
+}
+
+/* Carrusel uniforme */
+.carousel-inner img {
+    height: 500px;      /* todas las imágenes mismo alto */
+    width: 100%;
+    object-fit: cover;  /* se recortan sin deformarse */
+}
+
+img {
+    max-width: 100%;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: #c80a0a; /* Rojo fuerte */
+    height: 105px;
+    display: flex;
+    align-items: center;
+}
+
+.menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 100px;
+    color: #111111;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+.menu .navbar ul li{
+    position: relative;
+    float: left;
+}
+
+.menu .navbar ul li a {
+    font-size: 18px;
+    padding: 20px;
+    color: #ffffff;
+    display: block;
+    text-decoration: none;
+}
+
+.menu .navbar ul li a:hover {
+    color: #888888; 
+    transition: color 0.3s ease;
+}
+
+/*ACA OCULTARE EL INPUT*/
+#menu {
+    display: none;
+}
+
+.menu-icono {
+    width: 25px;
+}
+/*PARA DARLE ESTILO AL MENU*/
+.menu label {
+    cursor: pointer;
+    display: none;
+}
+
+.submenu {
+    position: relative;
+}
+
+.submenu #carrito {
+    display: none;
+}
+
+.submenu:hover #carrito { /*Le estoy dando estilo y forma al icono del carrito*/
+    display: block;
+    position: absolute;
+    right: 0;
+    backdrop-filter: blur(10px);
+    top: 100%;
+    z-index: 1;
+    background-color: #4E4B5076;
+    padding: 20px;
+    min-width: 400px;
+}
+
+.logo img {
+    height: 140px;  /* antes 60px */
+    width: auto;    /* mantiene proporción */
+    display: block;
+    margin-left: 10%;
+}
+
+
+/* Hace que el icono de usuario sea negro */
+.icon-user {
+    width: 28px;
+    height: 28px;
+    color: #111111;   /* negro */
+    margin-left: 20px; /* espacio con respecto al carrito */
+    cursor: pointer;
+}
+
+/* Asegura que no herede color azul de los links */
+.user-icon svg {
+    stroke: #111111;  /* contorno negro */
+    fill: none;
+}
+
+.user-icon img:hover {
+    transform: scale(1.1); /* pequeño efecto al pasar el mouse */
+}
+
+table {
+    width: 100%;
+}
+
+th, td {
+    color: #FFFFFF; 
+}
+
+.borrar {
+    background-color: #111111;
+    border-radius: 50%;
+    padding: 5px 10px;
+    text-decoration: none;
+    color: #FFFFFF;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.header-content {
+    display: flex; /*Para colocar elementos delante de otros*/
+    justify-content: space-between; /*Para dejar una separacion*/
+    align-items: center;
+    flex: 1;
+    padding: 0 200px;
+}
+
+.header-img {
+    flex-basis: 80%;
+    text-align: center;
+}
+
+.portada {
+    padding: 10;
+}
+
+.header-txt {
+    flex-basis: 50%;
+    text-align: center;
+}
+
+.header-txt h1 {
+    font-size: 90px;
+    text-transform: uppercase;
+    line-height: 1;
+    color: #111111;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    margin-bottom: 15px;
+}
+
+.header-txt p {
+    font-size: 20px;
+    text-transform: uppercase;
+    margin-bottom: 20px; /*Para dejar una separacion abajo dentro del parrafo*/
+}
+
+.btn-1 { /*le dare forma y estilo al boton*/
+    display: inline-block;
+    padding: 11px 25px;
+    background-color: #111111;
+    color: #FFFFFF;
+    border-radius: 5px;
+}
+
+.ofert {
+    padding: 20px 0 0 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.ofert-1 {
+    display: flex;
+    align-items: center;
+    flex-basis: calc(33.3% - 15px);
+    background-color: #F5F5F5;
+    padding: 35px;
+}
+
+.ofert-img {
+    flex-basis: 50%;
+    margin-right: 15px;
+}
+
+.ofert-img img {
+    width: 250px;
+}
+
+.ofert-txt {
+    flex-basis: 50%;
+    text-align: center;
+}
+
+.ofert-txt h3 {
+    color: #111111;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 25px;
+    text-transform: uppercase; /*Es para transformar el texto en mayúscula*/
+    margin-bottom: 15px;
+}
+
+.btn-2 {
+    display: inline-block;
+    padding: 10px 50px;
+    background-color: #e01010;
+    color: #F5F5F5;
+    border-radius: 5px;
+    font-size: 15px;
+    text-decoration: none;
+}
+
+.products {
+    padding: 50px 0;
+    text-align: center;
+}
+
+.products h2{
+    color: #111111;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 50px;
+    text-transform: uppercase;
+    margin-bottom: 50px;
+}
+
+.product-content {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap : 50px;
+}
+
+.product {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    min-height: 550px; /* Ajusta según tus necesidades */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.product img {
+    width: 250px;
+    height: 370px;
+    margin-bottom: 20px;
+}
+
+.product h3 {
+    font-size: 20px;
+    color: #111111;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.product p, .precio {
+    font-size: 16px;
+    color: #111111;
+    margin-bottom: 15px;
+}
+
+.precio {
+    font-weight: 800;
+}
+
+/*ACA COMENZARE A DARLE ESTILO Y FORMA AL FOOTER*/
+
+
+.footer {
+    padding: 10px 0;
+    background-color: #f5f5f5;
+    
+}
+
+.footer-social-link {
+    font-size: 14px; /* texto más pequeño */
+    transition: color 0.3s ease;
+}
+
+.footer-social-link:hover {
+    color: #007bff !important; /* azul al pasar el mouse */
+    cursor: pointer;
+}
+
+.footer a {
+     color: #222
+}
+
+.footer .h3,.footer p {
+    color: #222 !important;
+    font-size: 16px;
+}
+
+.footer .h5 {
+    font-size: 20px;    
+}
+
+.text-white text-decoration-none{
+    color: #111111;
+}
+.footer-content {
+    display: flex;
+    justify-content: space-between;   /* reparte extremos */
+    align-items: flex-start;
+    gap: 40px;                        /* separación consistente */
+    flex-wrap: wrap;                  /* si no caben, pasan a otra línea */display: flex;
+    justify-content: space-between;
+}
+
+/* Reset básico de listas en el footer */
+.footer .link ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+} 
+/* LINEA O HR DEL FOOTER*/
+.footer-line {
+    border: none;
+    border-top: 1px solid #030303; /* línea fina y gris clara */
+    margin: 0 auto 10px auto; /* espacio debajo para separar del texto */
+    width: 80%; /* ancho ajustable */
+}
+
+
+.link h3 {
+    font-size: 18px;
+    color: #FFFFFF;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.link a {
+    font-size: 16px;
+    color: #DCDCDC;
+    display: block;
+    margin-bottom: 10px;
+}
+
+/*ACA COMENZARE A DARLE ESTILO Y FORMA AL MENU DE CADA PRODUCTO*/
+/* Contenedor principal del modal de producto */
+.product-modal-body {
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+    padding: 5px 4px 0 4px;
+}
+
+.product-modal-img {
+    width: 110px;
+    min-width: 90px;
+    height: 140px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1.5px solid #eee;
+    background: #fafbfc;
+    margin-right: 3px;
+}
+
+.product-modal-details {
+    flex: 1;
+    min-width: 220px;
+}
+
+.product-modal-title {
+    font-size: 1.13rem;
+    font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 3px;
+    color: #222;
+}
+
+.product-modal-desc {
+    font-size: 1.01rem;
+    color: #333;
+    margin-bottom: 11px;
+}
+
+.product-modal-opciones {
+    margin-bottom: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.product-modal-opciones label {
+    margin-right: 24px;
+}
+.product-modal-precio-borrado {
+    text-decoration: line-through;
+    color: #a9a9a9;
+    font-weight: normal;
+}
+.product-modal-precio-descuento {
+    color: #218838;
+    font-weight: bold;
+}
+
+/* Promo box */
+.product-modal-promo {
+    border-radius: 6px;
+    background: #f3f6fa;
+    padding: 8px 12px 9px 12px;
+    margin-bottom: 10px;
+    font-size: .94rem;
+    font-weight: 500;
+}
+.product-modal-promo strong {
+    color: #222;
+    font-size: 1.01rem;
+}
+
+/* Sección cantidad y botones */
+.product-modal-cantidad {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.product-modal-cantidad label {
+    margin-bottom: 0;
+    min-width: 65px;
+    font-size: 0.98rem;
+}
+
+.product-modal-cantidad input[type="number"] {
+    width: 48px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 1rem;
+    text-align: center;
+    border: 1px solid #c4c4c4;
+    margin-right: 4px;
+}
+
+
+/*ACA COMENZARE A DARLE ESTILO Y FORMA A LA PARTE RESPONSIVE*/
+@media (max-width:991px) {
+
+    .menu {
+        padding: 20px;
+    }
+
+    .menu label {
+        display: initial;
+    }
+
+    .menu .navbar {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: #181818;
+        display: none;
+    }
+
+    .menu .navbar ul li {
+        width: 100%;
+    }
+
+    .menu .navbar ul li a {
+        color: #FFFFFF;
+    }
+
+    #menu:checked ~ .navbar {
+        display: initial;
+    }
+    
+    .logo {
+        display: none;
+    }
+
+    .submenu:hover #carrito {
+        min-width: 100%;
+    }
+
+    .header {
+        min-height: 0vh;
+    }
+
+    .header-content {
+        padding: 50px 0;
+        flex-direction: column;
+    }
+
+    .header-img {
+        display: none;
+    }
+
+    .header-txt {
+        flex-basis: 100%;
+        text-align: center;
+    }
+
+    .header-txt h1 {
+        font-size: 70px;
+    }
+
+    .ofert {
+        padding: 30px 30px 0 30px;
+        flex-direction: column;
+    }
+
+    .ofert-1 {
+        margin-bottom: 30px;
+    }
+
+    .products {
+        padding: 0 30px 30px 30px;
+    }
+
+    .products h2 {
+        margin-bottom: 30px;
+    }
+
+    .product-content {
+        grid-template-columns: repeat(1, 1fr);
+        gap: 30px;
+    }
+
+    .product img {
+        width: 200px;
+        height: 280px;
+    }
+
+    .icons {
+        padding: 30px;
+        flex-direction: column;
+    }
+
+    .icon-1 {
+        margin-bottom: 30px;
+    }
+
+    .blog {
+        padding: 0 30px 30px 30px;
+        flex-direction: column;
+    }
+
+    .blog-1 {
+        margin-bottom: 30px;
+    }
+
+    .footer {
+        padding: 30px;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+

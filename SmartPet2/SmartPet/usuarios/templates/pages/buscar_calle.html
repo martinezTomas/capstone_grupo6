@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><Document></title>
+    
+</head>
+<body>
+    <div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+
+      <h3 class="mb-4 fw-bold"> Buscar dirección en Chilexpress</h3>
+
+      <form method="POST" action="{% url 'buscar_calle_view' %}" class="p-4 bg-light rounded shadow-sm">
+        {% csrf_token %}
+        <div class="row g-3 justify-content-center">
+          <div class="col-md-5">
+            <input type="text" name="comuna" class="form-control text-center" placeholder="Ej: SANTIAGO CENTRO" required>
+          </div>
+          <div class="col-md-5">
+            <input type="text" name="calle" class="form-control text-center" placeholder="Ej: DOCTOR ALLENDE PADIN" required>
+          </div>
+          <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-danger fw-bold">Buscar</button>
+          </div>
+        </div>
+      </form>
+
+      {% if calles %}
+      <h5 class="mt-4">Resultados para <span class="text-danger">"{{ calle }}"</span> en <span class="text-primary">"{{ comuna }}"</span>:</h5>
+      <ul class="list-group mt-3 text-start">
+        {% for c in calles %}
+          {% if c.error %}
+            <li class="list-group-item text-danger">{{ c.error }}</li>
+          {% else %}
+            <li class="list-group-item">
+              <strong>{{ c.streetName }}</strong> — {{ c.countyName }} ({{ c.roadType }})
+            </li>
+          {% endif %}
+        {% empty %}
+          <li class="list-group-item">No se encontraron coincidencias.</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+  </div>
+</div>
+</body>
+</html>

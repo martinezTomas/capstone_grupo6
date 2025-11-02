@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/catalogo.css' %}">
+<div class="container catalogo-container">
+  <h2 class="catalogo-title">Catálogo de Productos</h2>
+
+  <!-- FILTROS -->
+  <div class="catalogo-filtros mb-5">
+    <form method="get" action="{% url 'catalogo' %}" class="row g-3 mb-4 align-items-end">
+
+      <!-- Especie -->
+      <div class="col-md-3">
+        <select name="especie" class="form-select">
+          <option value="">Todas las especies</option>
+          <option value="perro" {% if especie_actual == 'perro' %}selected{% endif %}>Perros</option>
+          <option value="gato" {% if especie_actual == 'gato' %}selected{% endif %}>Gatos</option>
+          <option value="pez" {% if especie_actual == 'pez' %}selected{% endif %}>Peces</option>
+          <option value="ave" {% if especie_actual == 'ave' %}selected{% endif %}>Aves</option>
+          <option value="roedor" {% if especie_actual == 'roedor' %}selected{% endif %}>Roedores</option>
+          <option value="reptil" {% if especie_actual == 'reptil' %}selected{% endif %}>Reptiles</option>
+          <option value="otros" {% if especie_actual == 'otros' %}selected{% endif %}>Otros</option>
+        </select>
+      </div>
+
+      <!-- Categoría -->
+      <div class="col-md-3">
+        <select name="categoria" class="form-select">
+          <option value="">Todas las categorías</option>
+          <option value="alimento" {% if categoria_actual == 'alimento' %}selected{% endif %}>Alimento</option>
+          <option value="accesorio" {% if categoria_actual == 'accesorio' %}selected{% endif %}>Accesorio</option>
+          <option value="higiene" {% if categoria_actual == 'higiene' %}selected{% endif %}>Higiene</option>
+          <option value="salud" {% if categoria_actual == 'salud' %}selected{% endif %}>Salud</option>
+          <option value="juguete" {% if categoria_actual == 'juguete' %}selected{% endif %}>Juguete</option>
+          <option value="ropa" {% if categoria_actual == 'ropa' %}selected{% endif %}>Ropa</option>
+          <option value="cama" {% if categoria_actual == 'cama' %}selected{% endif %}>Cama</option>
+        </select>
+      </div>
+
+      <!-- Subcategoría -->
+      <div class="col-md-3">
+        <select name="subcategoria" class="form-select">
+          <option value="">Todas las subcategorías</option>
+          <optgroup label="Alimentos">
+            <option value="alimentos_secos">Alimentos Secos</option>
+            <option value="alimentos_humedos">Alimentos Húmedos</option>
+          </optgroup>
+          <optgroup label="Accesorios">
+            <option value="camas">Camas y Escondites</option>
+            <option value="rascadores">Rascadores</option>
+            <option value="fuentes">Fuentes para Beber</option>
+            <option value="collares">Collares y Arnés</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <!-- Marca -->
+      <div class="col-md-3">
+        <input type="text" name="marca" value="{{ marca_actual|default_if_none:'' }}" class="form-control" placeholder="Marca">
+      </div>
+
+      <!-- Rango de precios (alineado a la derecha) -->
+      <div class="col-md-3 offset-md-9 precio-range mt-0">
+        <input type="number" name="precio_min" value="{{ precio_min }}" placeholder="Desde $" class="form-control">
+        <input type="number" name="precio_max" value="{{ precio_max }}" placeholder="Hasta $" class="form-control">
+      </div>
+
+      <!-- Botones -->
+      <div class="col-12 text-center">
+        <button type="submit" class="btn btn-aplicar me-2 mt-2">Aplicar filtros</button>
+        <a href="{% url 'catalogo' %}" class="btn btn-limpiar mt-2">Limpiar</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- TARJETAS DE PRODUCTOS -->
+  <div class="row">
+    {% for producto in productos %}
+      <div class="col-md-4 mb-4">
+        <a href="{% url 'detalle_producto' producto.id %}" class="text-decoration-none text-dark">
+          <div class="card h-100 shadow-sm">
+            {% if producto.imagen %}
+              <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
+            {% else %}
+              <img src="{% static 'Img/sin-imagen.jpg' %}" class="card-img-top" alt="Sin imagen">
+            {% endif %}
+            <div class="card-body text-center">
+              <h5 class="card-title fw-bold">{{ producto.nombre }}</h5>
+              <p class="card-text text-muted">{{ producto.descripcion|truncatewords:15 }}</p>
+              <p class="text-danger fw-bold fs-5">${{ producto.precio }}</p>
+              <span class="btn btn-outline-danger mt-2">Ver detalles</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% empty %}
+      <div class="text-center my-5">
+        <h5 class="text-muted">No se encontraron productos con los filtros seleccionados 🐾</h5>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
