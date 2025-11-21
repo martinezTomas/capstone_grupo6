@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container my-5">
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <!-- Contenedor principal del formulario -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <!-- Título dinámico: puede ser "Editar Producto" o similar -->
+                    <h2 class="card-title text-center mb-4">{{ titulo }}</h2>
+
+                    <!-- ==================== MENSAJES DE SISTEMA ==================== -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- ==================== FORMULARIO PRINCIPAL ==================== -->
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!-- ==================== DATOS BÁSICOS ==================== -->
+                        <h5 class="text-danger fw-bold mt-3">Datos Básicos</h5>
+
+                        <!-- Campos gestionados con crispy forms -->
+                        {{ form.nombre|as_crispy_field }}
+                        {{ form.descripcion|as_crispy_field }}
+                        {{ form.precio|as_crispy_field }}
+                        {{ form.stock|as_crispy_field }}
+                        {{ form.imagen|as_crispy_field }}
+
+                        <!-- ==================== CLASIFICACIÓN ==================== -->
+                        <h5 class="text-danger fw-bold mt-3">Clasificación</h5>
+
+                        <!-- Categoría, subcategoría, especie, marca -->
+                        {{ form.categoria|as_crispy_field }}
+                        {{ form.subcategoria|as_crispy_field }}
+                        {{ form.especie|as_crispy_field }}
+                        {{ form.marca|as_crispy_field }}
+
+                        <!-- ==================== DIMENSIONES Y ENVÍO ==================== -->
+                        <h5 class="text-danger fw-bold mt-3">Dimensiones y Envío</h5>
+
+                        <!-- Medidas en 3 columnas -->
+                        <div class="row">
+                            <div class="col-md-4">{{ form.alto_cm|as_crispy_field }}</div>
+                            <div class="col-md-4">{{ form.ancho_cm|as_crispy_field }}</div>
+                            <div class="col-md-4">{{ form.largo_cm|as_crispy_field }}</div>
+                        </div>
+
+                        <!-- Peso del producto -->
+                        {{ form.peso_kg|as_crispy_field }}
+
+                        <!-- ==================== BOTONES ==================== -->
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-danger fw-bold">
+                                Actualizar Producto
+                            </button>
+
+                            <a href="{% url 'lista_productos_admin' %}" 
+                               class="btn btn-outline-secondary">
+                                Cancelar
+                            </a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- ==================== SCRIPT PARA CARGAR SUBCATEGORÍAS ==================== -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  // Obtener selects del formulario
+  const categoriaSelect = document.getElementById("id_categoria");
+  const subcategoriaSelect = document.getElementById("id_subcategoria");
+
+  if (!categoriaSelect || !subcategoriaSelect) return;
+
+  // --- Función para actualizar dinámicamente las subcategorías ---
+  function actualizarSubcategorias(categoriaId) {
+    subcategoriaSelect.innerHTML = '<option value="">Cargando...</option>';
+
+    if (!categoriaId) {
+      subcategoriaSelect.innerHTML = '<option value="">Seleccione una subcategoría (opcional)</option>';
+      return;
+    }
+
+    // Solicitud AJAX al endpoint que retorna subcategorías según categoría
+    fetch(`/api/subcategorias/formulario/?categoria_id=${encodeURIComponent(categoriaId)}`)
+      .then(response => response.json())
+      .then(data => {
+        subcategoriaSelect.innerHTML = '<option value="">Seleccione una subcategoría (opcional)</option>';
+
+        // Añade todas las subcategorías al select
+        data.subcategorias.forEach(sub => {
+          const option = document.createElement('option');
+          option.value = sub.id;
+          option.textContent = sub.nombre;
+          subcategoriaSelect.appendChild(option);
+        });
+      })
+      .catch(error => {
+        console.error("Error al cargar subcategorías:", error);
+        subcategoriaSelect.innerHTML = '<option value="">Error al cargar</option>';
+      });
+  }
+
+  // Evento cuando el usuario cambia la categoría
+  categoriaSelect.addEventListener("change", function () {
+    const categoriaId = this.value;
+    actualizarSubcategorias(categoriaId);
+  });
+
+  // Carga automática de subcategorías cuando el formulario ya viene con datos (modo edición)
+  const categoriaInicial = categoriaSelect.value;
+  if (categoriaInicial) {
+    actualizarSubcategorias(categoriaInicial);
+  }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}- Detalle Pedido #{{ pedido.id }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+    <!-- ENCABEZADO CON BOTÓN PARA VOLVER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">
+            Detalle del Pedido <span class="text-primary">#{{ pedido.id }}</span>
+        </h2>
+
+        <!-- Enlace para regresar al listado de pedidos -->
+        <a href="{% url 'mis_pedidos' %}" class="btn btn-outline-secondary">
+            &larr; Volver a Mis Pedidos
+        </a>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- =============================
+             COLUMNA IZQUIERDA
+             - Estado del pedido
+             - Datos de entrega
+        ============================== -->
+        <div class="col-lg-5">
+
+            <!-- Tarjeta: Estado del pedido -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0 fw-bold">Estado del Pedido</h5>
+                </div>
+
+                <div class="card-body">
+
+                    {% if pedido.estado == 'APROBADO' %}
+                        <!-- Estado: Pago aprobado -->
+                        <h4 class="text-success fw-bold">✅ ¡Pago Exitoso!</h4>
+                        <p class="text-muted">
+                            Hemos recibido tu pago. Estamos preparando tu pedido.
+                        </p>
+
+                    {% elif pedido.estado == 'ENVIADO' %}
+                        <!-- Estado: Enviado -->
+                        <h4 class="text-primary fw-bold">🚚 Enviado</h4>
+                        <p class="text-muted">
+                            Tu pedido ya fue despachado con Chilexpress.
+                        </p>
+
+                    {% else %}
+                        <!-- Estado genérico -->
+                        <h4 class="text-warning fw-bold">⏳ Procesando...</h4>
+                        <p class="text-muted">
+                            Estamos verificando la confirmación del pago.
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Tarjeta: Información de entrega -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0 fw-bold">Datos de Entrega</h5>
+                </div>
+                <div class="card-body">
+
+                    <!-- Datos del cliente -->
+                    <p><strong>Nombre:</strong> {{ pedido.nombre_cliente }} {{ pedido.apellido_cliente }}</p>
+                    <p><strong>Email:</strong> {{ pedido.email_cliente }}</p>
+
+                    <hr>
+
+                    <!-- Si existe dirección → es despacho a domicilio -->
+                    {% if pedido.calle %}
+                        <p><strong>Tipo:</strong> Despacho a Domicilio</p>
+                        <p>
+                            <strong>Dirección:</strong>
+                            {{ pedido.calle }} {{ pedido.numero }},
+                            {{ pedido.comuna.nombre }},
+                            {{ pedido.region.nombre }}.
+                        </p>
+
+                    {% else %}
+                        <!-- Caso contrario: retiro en local -->
+                        <p><strong>Tipo:</strong> Retiro en Local</p>
+                        <p><strong>Dirección:</strong> Av. El Conquistador 741, Maipú, Santiago.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- =============================
+             COLUMNA DERECHA
+             - Tabla de productos del pedido
+        ============================== -->
+        <div class="col-lg-7">
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0 fw-bold">Resumen de Productos</h5>
+                </div>
+
+                <!-- TABLA DE PRODUCTOS -->
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <tbody>
+
+                                {% for item in items %}
+                                <tr>
+
+                                    <!-- Columna: Imagen + nombre del producto -->
+                                    <td class="p-3">
+                                        <div class="d-flex align-items-center">
+
+                                            <!-- Imagen del producto -->
+                                            <img src="{{ item.producto.imagen.url }}"
+                                                 alt="{{ item.producto.nombre }}"
+                                                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; margin-right: 15px;">
+
+                                            <!-- Nombre + peso si corresponde -->
+                                            <div>
+                                                <strong>{{ item.producto.nombre }}</strong>
+                                                <br>
+                                                {% if item.peso %}
+                                                    <small class="text-muted">{{ item.peso }}</small>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <!-- Columna: cantidad × precio congelado -->
+                                    <td class="text-center">
+                                        {{ item.cantidad }} x ${{ item.precio_unitario_congelado|floatformat:0|intcomma }}
+                                    </td>
+
+                                    <!-- Columna: subtotal -->
+                                    <td class="text-end fw-bold p-3">
+                                        ${{ item.get_subtotal|floatformat:0|intcomma }}
+                                    </td>
+
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TOTAL pagado -->
+                <div class="card-footer d-flex justify-content-end align-items-center bg-white p-3">
+                    <h4 class="mb-0 fw-bold text-success">
+                        Total Pagado:
+                        ${{ pedido.total|floatformat:0|intcomma }}
+                    </h4>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

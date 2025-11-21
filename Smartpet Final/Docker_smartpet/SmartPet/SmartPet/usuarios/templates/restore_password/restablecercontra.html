@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<main class="d-flex justify-content-center align-items-center py-5" style="min-height: 80vh;">
+  <div class="login-card text-center shadow-lg p-4" style="border-radius: 15px; background-color: #ffffff; max-width: 420px;">
+    
+    <!-- Logo -->
+    <img src="{% static 'Img/Logo.png' %}" alt="SmartPet Logo" class="logo-formulario mb-3" style="width: 95px; height: auto;">
+    
+    <!-- Título -->
+    <h2 class="fw-bold text-dark mb-2">
+      <img src="{% static 'Img/candado.svg' %}" alt="lock icon" style="width:24px; margin-right:6px;">
+      Nueva contraseña
+    </h2>
+    <p class="text-muted mb-4" style="font-size: 0.95rem;">
+      Ingresa una nueva contraseña para tu cuenta SmartPet.
+    </p>
+
+    <!-- Formulario -->
+    <form method="post">
+      {% csrf_token %}
+      
+      <div class="mb-3 text-start">
+        <label class="form-label fw-semibold">Nueva contraseña</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0">
+            <img src="{% static 'Img/contraseña.svg' %}" alt="password icon" style="width:20px;">
+          </span>
+          <input type="password" name="password" class="form-control border-start-0" placeholder="********" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn w-100 mt-3 fw-semibold" 
+              style="background-color:#6f42c1; color:#fff; border:none; border-radius:10px; padding:10px;">
+        Guardar nueva contraseña
+      </button>
+    </form>
+
+    <!-- Volver -->
+    <div class="text-center mt-3">
+      <a href="{% url 'login' %}" class="text-decoration-none" style="color:#6f42c1;">
+        ← Volver al inicio de sesión
+      </a>
+    </div>
+  </div>
+</main>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<main class="d-flex justify-content-center align-items-center py-5" style="min-height: 80vh;">
+  <div class="login-card text-center shadow-lg p-4" style="border-radius: 15px; background-color: #fff; max-width: 420px;">
+    
+    <img src="{% static 'Img/Logo.png' %}" alt="SmartPet Logo" class="logo-formulario mb-3" style="width: 90px; height: auto;">
+    
+    <h2 class="fw-bold text-dark mb-3">Cambiar Contraseña</h2>
+    <p class="text-muted">Por seguridad, ingresa tu contraseña actual y luego la nueva.</p>
+  <!--Cuestionario para cambio de contraseña-->
+    <form method="post">
+      {% csrf_token %}
+      <!--Campo para contraseña actual-->
+      <div class="mb-3 text-start">
+        <label class="form-label fw-semibold">Contraseña actual</label>
+        <input type="password" name="contrasena_actual" class="form-control" placeholder="********" required>
+      </div>
+      <!--Campo para nueva contraseña-->
+      <div class="mb-3 text-start">
+        <label class="form-label fw-semibold">Nueva contraseña</label>
+        <input type="password" name="nueva_contrasena" class="form-control" placeholder="********" required>
+      </div>
+      <!--Campo para confirmar nueva contraseña-->
+      <div class="mb-4 text-start">
+        <label class="form-label fw-semibold">Confirmar nueva contraseña</label>
+        <input type="password" name="confirmar_contrasena" class="form-control" placeholder="********" required>
+      </div>
+      <!--Botón para guardar nueva contraseña-->
+      <button type="submit" class="btn w-100 fw-semibold" 
+              style="background-color:#6f42c1; color:#fff; border:none; border-radius:10px; padding:10px;">
+        Guardar nueva contraseña
+      </button>
+      <!--Enlace para volver al perfil-->
+      <div class="text-center mt-3">
+        <a href="{% url 'mi_perfil_ver' %}" class="text-decoration-none" style="color:#6f42c1;">
+          ← Volver a mi perfil
+        </a>
+      </div>
+    </form>
+  </div>
+</main>
+
+{% endblock %}

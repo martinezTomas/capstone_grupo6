@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}- Gestionar Pedidos{% endblock %}
+
+{% block content %}
+
+<!-- Contenedor principal con márgenes -->
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-12">
+
+            <!-- Título superior + espacio para acciones si se agregan en el futuro -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold mb-0">Gestión de Pedidos</h2>
+            </div>
+
+            <!-- Tarjeta que contiene la tabla -->
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+
+                    <!-- Tabla con scroll horizontal para pantallas pequeñas -->
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover align-middle">
+
+                            <!-- Encabezado de la tabla -->
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID Pedido</th>
+                                    <th>Fecha</th>
+                                    <th>Cliente</th>
+                                    <th>Email</th>
+                                    <th>Total</th>
+                                    <th>Completado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <!-- Bucle de todos los pedidos recibidos -->
+                                {% for p in pedidos %}
+                                <tr>
+                                    <!-- ID del pedido -->
+                                    <td>#{{ p.id }}</td>
+
+                                    <!-- Fecha con formato día/mes/año y hora -->
+                                    <td>{{ p.fecha_pedido|date:"d/m/Y H:i" }}</td>
+
+                                    <!-- Datos del cliente -->
+                                    <td>{{ p.nombre_cliente }} {{ p.apellido_cliente }}</td>
+                                    <td>{{ p.email_cliente }}</td>
+
+                                    <!-- Tipo de envío o método (llega desde el modelo) -->
+                                    <td>{{ p.tipo_envio }}</td>
+
+                                    <!-- Total pagado → formateado con separadores -->
+                                    <td>${{ p.total|floatformat:0|intcomma }}</td>
+
+                                    <!-- Estado con su respectiva etiqueta visual -->
+                                    <td>
+                                        {% if p.estado == 'APROBADO' %}
+                                            <span class="badge bg-success">Pago Aprobado</span>
+
+                                        {% elif p.estado == 'ENVIADO' %}
+                                            <span class="badge bg-primary">Enviado</span>
+
+                                        {% elif p.estado == 'ERROR_ENVIO' %}
+                                            <span class="badge bg-danger">Error en Envío</span>
+
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark">Pendiente</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Botón para ver detalles completos del pedido -->
+                                    <td>
+                                        <a href="{% url 'pedido_detalle' p.id %}" class="btn btn-sm btn-outline-primary">
+                                            Ver más
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <!-- Si no hay pedidos -->
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted p-4">
+                                        No se encontraron pedidos.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

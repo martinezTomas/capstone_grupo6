@@ -1,0 +1,220 @@
+/* ======================================================
+   SMARTPET — Mis Mascotas
+   Diseño limpio, moderno y responsive
+   Colores base:
+   - Primario: #096C8A
+   - Secundario: #0A8A6C
+   - Fondo: #F5F9FA
+   - Texto oscuro: #222
+====================================================== */
+
+body {
+    background-color: #F5F9FA;
+}
+
+/* ==========================
+   📌 Tarjetas generales
+========================== */
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 0;
+    border: 1px solid #e2e8ec;
+    transition: 0.25s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.card-body {
+    padding: 28px;
+}
+
+/* ==========================
+   🐾 Títulos
+========================== */
+h4 {
+    color: #096C8A;
+    font-weight: 700;
+}
+
+h5 {
+    color: #064B63;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+/* ==========================
+   📁 Formularios
+========================== */
+label {
+    font-weight: 600;
+    color: #064B63;
+    margin-bottom: 5px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #c7d6de;
+    background: #fff;
+    transition: 0.25s ease;
+}
+
+input:focus,
+select:focus {
+    border-color: #096C8A;
+    box-shadow: 0 0 0 3px rgba(9,108,138,0.2);
+}
+
+/* Checkbox */
+.form-check-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-left: 5px;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;  /* separa checkbox del texto */
+    font-size: 1rem;
+}
+
+/* checkbox estándar mejorado */
+.form-check input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* etiqueta */
+.form-check-label {
+    cursor: pointer;
+    color: #064B63;
+    font-weight: 500;
+}
+
+/* Botón enviar */
+.btn {
+    background-color: #096C8A;
+    color: #fff;
+    font-weight: 600;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    transition: 0.25s ease;
+}
+
+.btn:hover {
+    background-color: #064B63;
+    transform: translateY(-2px);
+}
+
+/* ==========================
+   🐶 Foto de mascota
+========================== */
+.mascota-foto {
+    max-width: 150px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+/* ==========================
+   🔧 Acciones (modificar/eliminar)
+========================== */
+.acciones {
+    text-align: right;
+    margin-bottom: 15px;
+}
+
+.acciones .btn {
+    display: inline-block;
+    padding: 8px 14px;
+    margin-left: 5px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+}
+
+/* Botón secundario */
+.btn-outline {
+    background: transparent;
+    border: 2px solid #096C8A;
+    color: #096C8A;
+}
+
+.btn-outline:hover {
+    background-color: #096C8A;
+    color: #fff;
+}
+
+/* ==========================
+   📝 Lista de información
+========================== */
+ul.list-unstyled li {
+    margin-bottom: 6px;
+    color: #222;
+}
+
+/* Etiquetas de condiciones */
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    background: #0A8A6C;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    margin-right: 4px;
+}
+
+/* ==========================
+   📱 Responsive
+========================== */
+@media (max-width: 992px) {
+
+    .card-body {
+        padding: 22px;
+    }
+
+    .mascota-foto {
+        max-width: 130px;
+    }
+
+    .acciones {
+        text-align: center;
+        margin-bottom: 12px;
+    }
+
+    .acciones .btn {
+        width: 48%;
+        margin-bottom: 6px;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-check-group {
+        gap: 12px;
+    }
+    .form-check-label {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .mascota-foto {
+        max-width: 110px;
+    }
+
+    .btn {
+        padding: 10px;
+    }
+
+    .acciones .btn {
+        width: 100%;
+    }
+}

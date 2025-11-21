@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- CSS específico del login -->
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<main class="d-flex justify-content-center align-items-center py-5" style="min-height: 80vh;">
+
+  <!-- Contenedor principal del formulario -->
+  <div class="login-card text-center">
+
+      <!-- Logo -->
+      <img src="{% static 'Img/Logo.png' %}" alt="SmartPet Logo" class="logo-formulario">
+
+      <!-- Título de bienvenida -->
+      <h2 class="text-center">¡Bienvenido!</h2>
+      <p class="text-center">Inicia sesión para continuar</p>
+
+      <!-- Mensajes de error o información del sistema -->
+      {% if messages %}
+          {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" style="text-align: left;">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+          {% endfor %}
+      {% endif %}
+
+      <!-- Formulario de inicio de sesión -->
+      <form id="loginForm" method="post" autocomplete="off" novalidate>
+          {% csrf_token %}
+
+          <!-- Campo de usuario con icono -->
+          <div class="mb-3 text-start">
+              <label class="form-label fw-semibold">Usuario</label>
+              <div class="input-group">
+                  <span class="input-group-text">
+                      <img src="{% static 'Img/email.svg' %}" alt="user icon" style="width:20px;">
+                  </span>
+                  <input type="text" name="username" id="id_username" class="form-control"
+                         placeholder="Ingresa tu usuario" required>
+              </div>
+          </div>
+
+          <!-- Campo de contraseña con icono -->
+          <div class="mb-4 text-start">
+              <label class="form-label fw-semibold">Contraseña</label>
+              <div class="input-group">
+                  <span class="input-group-text">
+                      <img src="{% static 'Img/contraseña.svg' %}" alt="password icon" style="width:20px;">
+                  </span>
+                  <input type="password" name="password" id="id_password" class="form-control"
+                         placeholder="********" required>
+              </div>
+          </div>
+
+          <!-- Botón enviar -->
+          <button type="submit" class="btn-login">Iniciar sesión</button>
+
+          <!-- Enlace que abre el modal de recuperación -->
+          <a href="#" class="forgot-link" data-bs-toggle="modal" data-bs-target="#modalRecuperar">
+              ¿Olvidaste tu contraseña?
+          </a>
+
+          <!-- Enlace a registro -->
+          <div class="text-center text-register mt-3">
+              <p>¿No tienes cuenta? <a href="{% url 'register' %}">Regístrate</a></p>
+          </div>
+      </form>
+  </div>
+</main>
+
+<!-- =====================================================
+     MODAL DE RECUPERACIÓN DE CONTRASEÑA
+===================================================== -->
+<div class="modal fade" id="modalRecuperar" tabindex="-1" aria-labelledby="recuperarLabel">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-3">
+
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold text-center w-100">🔐 Recuperar contraseña</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <p class="text-center mb-3">
+          Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
+        </p>
+
+        <!-- Formulario interno del modal -->
+        <form id="form-recuperar">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label">Correo electrónico</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <img src="{% static 'Img/email.svg' %}" style="width:20px;">
+              </span>
+              <input type="email" id="email-recuperar" class="form-control"
+                     placeholder="ejemplo@correo.com" required>
+            </div>
+          </div>
+
+          <button type="submit" id="btn-reset" class="btn-login w-100">Enviar enlace</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================
+     SCRIPT: Envío AJAX para recuperación de contraseña
+===================================================== -->
+<script>
+document.getElementById('form-recuperar').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const email = document.getElementById('email-recuperar').value.trim();
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+  if (!email) {
+    alert('Por favor ingresa un correo electrónico válido.');
+    return;
+  }
+
+  // Petición AJAX al backend
+  const response = await fetch('/api/password-reset/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrfToken
+    },
+    body: JSON.stringify({ email })
+  });
+
+  const data = await response.json();
+
+  // Manejo de la respuesta
+  if (data.success) {
+    alert('✅ ' + data.message);
+    document.getElementById('form-recuperar').reset();
+
+    // Cerrar modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('modalRecuperar'));
+    modal.hide();
+
+  } else {
+    alert('⚠️ ' + (data.message || 'Error al procesar la solicitud.'));
+  }
+});
+</script>
+
+<!-- Validaciones adicionales del formulario (archivo externo) -->
+<script src="{% static 'js/login_validation.js' %}"></script>
+
+{% endblock %}

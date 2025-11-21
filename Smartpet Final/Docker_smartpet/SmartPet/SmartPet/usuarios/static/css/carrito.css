@@ -1,0 +1,139 @@
+/* ======================================================
+   🐾 SmartPet - Estilo del Carrito de Compras
+   Paleta base: Azul petróleo (#096C8A) + Azul oscuro (#064B63)
+====================================================== */
+
+/* === CONTENEDOR PRINCIPAL === */
+.container {
+    color: #222;
+}
+
+/* Banner informativo */
+.info-envio {
+    background: #e8f5f8;
+    border-left: 4px solid #096C8A;
+    color: #064B63;
+    font-weight: 600;
+    border-radius: 10px;
+}
+
+/* === TARJETAS === */
+.card {
+    border-radius: 14px;
+    border: none;
+    transition: 0.25s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(9, 108, 138, 0.13);
+}
+
+/* === TABLA DEL CARRITO === */
+#tabla-carrito thead {
+    background: #F4F7F8;
+    color: #096C8A;
+    font-weight: 700;
+}
+
+.table-hover tbody tr:hover {
+    background: #f0fafc;
+}
+
+/* Imagen de producto */
+#tabla-carrito img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+/* Cantidad */
+.table input[type="number"] {
+    width: 70px;
+    text-align: center;
+    border-radius: 8px;
+    border: 1px solid #cdd7da;
+}
+
+/* === BOTÓN "Vaciar carrito" === */
+.btn-vaciar {
+    border: 2px solid #096C8A;
+    background: transparent;
+    color: #096C8A;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 8px 16px;
+    transition: 0.3s ease;
+}
+
+.btn-vaciar:hover {
+    background: #096C8A;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* === RESUMEN DE COMPRA === */
+.carrito-resumen {
+    border-top: 5px solid #096C8A;
+    border-radius: 16px;
+    background: white;
+}
+
+.carrito-resumen .card-body span {
+    font-size: 1rem;
+}
+
+/* Total */
+#total {
+    color: #096C8A;
+    font-weight: 800;
+}
+
+/* === BOTÓN Proceder al Pago === */
+.btn-proceder {
+    background: #096C8A;
+    color: white;
+    font-weight: 700;
+    padding: 12px 0;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    box-shadow: 0 5px 14px rgba(9, 108, 138, 0.25);
+    transition: 0.3s ease;
+}
+
+.btn-proceder:hover {
+    background: #064B63;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(9, 108, 138, 0.35);
+}
+
+/* === ALERTAS (personalizadas sin colores bootstrap) === */
+.alert {
+    border-radius: 12px;
+    border-left: 4px solid #096C8A;
+    background: #f5fbfc;
+    color: #064B63;
+    font-weight: 600;
+}
+
+/* Botón cerrar alert */
+.btn-close {
+    filter: grayscale(1);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .carrito-resumen {
+        margin-top: 20px;
+    }
+
+    #tabla-carrito img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .btn-proceder {
+        font-size: 1rem;
+        padding: 10px;
+    }
+}

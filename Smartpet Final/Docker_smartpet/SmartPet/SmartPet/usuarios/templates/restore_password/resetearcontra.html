@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<main class="d-flex justify-content-center align-items-center py-5" style="min-height: 80vh;">
+
+  <!-- Card principal -->
+  <div class="login-card text-center">
+
+    <!-- Logo -->
+    <img src="{% static 'Img/Logo.png' %}" 
+         alt="SmartPet Logo" 
+         class="logo-formulario"
+         style="width: 90px; margin-bottom: 15px;">
+
+    <!-- Título -->
+    <h2 class="text-center">🔒 Restablecer tu contraseña</h2>
+    <p class="text-center">Ingresa tu nueva contraseña para tu cuenta SmartPet.</p>
+
+    <!-- Formulario -->
+    <form method="post">
+      {% csrf_token %}
+
+      <!-- Campo: Nueva contraseña -->
+      <div class="mb-3 text-start">
+        <label class="form-label fw-semibold">Nueva contraseña</label>
+
+        <div class="input-group">
+          <span class="input-group-text">
+            <img src="{% static 'Img/contraseña.svg' %}" alt="password icon" style="width:20px;">
+          </span>
+
+          <input type="password" 
+                 name="password" 
+                 class="form-control" 
+                 placeholder="********" 
+                 required>
+        </div>
+      </div>
+
+      <!-- Botón -->
+      <button type="submit" class="btn-login w-100 mt-3">
+        Guardar nueva contraseña
+      </button>
+    </form>
+
+    <!-- Enlace para volver -->
+    <div class="text-center mt-3">
+      <a href="{% url 'login' %}" class="forgot-link">
+        Volver al inicio de sesión
+      </a>
+    </div>
+
+  </div>
+</main>
+
+{% endblock %}

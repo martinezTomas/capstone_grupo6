@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}- Mis Mascotas{% endblock %}
+
+{% block extra_css %} 
+    <link rel="stylesheet" href="{% static 'css/mis_mascotas.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- CONTENEDOR PRINCIPAL -->
+<div class="container my-5">
+    <div class="row g-5">
+
+        <!-- ======================================================
+         FORMULARIO PARA AÑADIR UNA NUEVA MASCOTA
+        ======================================================= -->
+        <div class="col-lg-5">
+            <div class="card">
+                <div class="card-body">
+
+                    <h4>Añadir una Mascota</h4>
+
+                    <!-- Formulario que permite registrar una nueva mascota -->
+                    <form method="POST" 
+                          action="{% url 'mis_mascotas' %}" 
+                          enctype="multipart/form-data"  
+                          novalidate>
+
+                        {% csrf_token %}
+
+                        <!-- Campo: Nombre -->
+                        <div class="mb-3">
+                            <label for="{{ form.nombre.id_for_label }}">
+                                {{ form.nombre.label }}
+                            </label>
+                            {{ form.nombre }}
+                        </div>
+
+                        <!-- Campo: Especie -->
+                        <div class="mb-3">
+                            <label for="{{ form.especie.id_for_label }}">
+                                {{ form.especie.label }}
+                            </label>
+                            {{ form.especie }}
+                        </div>
+
+                        <!-- Campo: Raza -->
+                        <div class="mb-3">
+                            <label for="{{ form.raza.id_for_label }}">
+                                {{ form.raza.label }}
+                            </label>
+                            {{ form.raza }}
+                        </div>
+
+                        <!-- Campo: Fecha nacimiento -->
+                        <div class="mb-3">
+                            <label for="{{ form.fecha_nacimiento.id_for_label }}">
+                                {{ form.fecha_nacimiento.label }}
+                            </label>
+                            {{ form.fecha_nacimiento }}
+                        </div>
+
+                        <!-- Campo: Foto -->
+                        <div class="mb-3">
+                            <label for="{{ form.foto.id_for_label }}">
+                                Foto de la mascota
+                            </label>
+                            {{ form.foto }}
+                        </div>
+
+                        <!-- Campo: Condiciones especiales (checkboxes dinámicos) -->
+                        <div class="mb-3">
+                            <label>{{ form.condiciones.label }}</label>
+
+                            <!-- Lista de checkbox -->
+                            <div id="id_condiciones">
+                                {% for check in form.condiciones %}
+                                    <div class="form-check">
+                                        {{ check.tag }}
+                                        <label for="{{ check.id_for_label }}">
+                                            {{ check.choice_label }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Botón de enviar -->
+                        <button type="submit" class="btn w-100">
+                            Guardar Mascota
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================================================
+         LISTADO DE MASCOTAS REGISTRADAS POR EL USUARIO
+        ======================================================= -->
+        <div class="col-lg-7">
+
+            <h4>Mis Mascotas Registradas</h4>
+
+            <!-- Si aún no tiene mascotas -->
+            {% if not mascotas %}
+                <div class="alert alert-info">
+                    Aún no has añadido ninguna mascota a tu perfil.
+                </div>
+            {% endif %}
+
+            <!-- Recorre cada mascota guardada -->
+            {% for mascota in mascotas %}
+                <div class="card mb-3">
+                    <div class="card-body">
+
+                        <!-- FOTO DE MASCOTA -->
+                        <div class="text-center mb-3">
+                            {% if mascota.foto %}
+                                <!-- Foto subida por el usuario -->
+                                <img src="{{ mascota.foto.url }}" class="mascota-foto">
+                            {% else %}
+                                <!-- Ícono genérico -->
+                                <img src="{% static 'Img/icono_mascota.jpg' %}" class="mascota-foto">
+                            {% endif %}
+                        </div>
+
+                        <!-- Acciones del item (modificar / eliminar) -->
+                        <div class="acciones">
+                            <a href="{% url 'mascota_modificar' mascota.slug %}" class="btn btn-sm">
+                                Modificar
+                            </a>
+
+                            <a href="{% url 'mascota_eliminar' mascota.slug %}" 
+                               class="btn btn-sm"
+                               onclick="return confirm('¿Estás seguro que quieres eliminar a {{ mascota.nombre }}?');">
+                                Eliminar
+                            </a>
+                        </div>
+
+                        <!-- Título con link hacia el perfil de la mascota -->
+                        <a href="{% url 'mascota_detalle' mascota.slug %}">
+                            <h5>{{ mascota.nombre }}</h5>
+                        </a>
+
+                        <!-- Datos de la mascota -->
+                        <ul class="list-unstyled">
+                            <li><strong>Especie:</strong> {{ mascota.especie.nombre }}</li>
+
+                            <li><strong>Raza:</strong> 
+                                {{ mascota.raza.nombre|default:"No especificada" }}
+                            </li>
+
+                            <li>
+                                <strong>Etapa de vida:</strong> 
+                                {{ mascota.etapa_vida_str }} ({{ mascota.edad_anos }} años)
+                            </li>
+
+                            {% if mascota.condiciones.all %}
+                                <li>
+                                    <strong>Condiciones:</strong>
+                                    {% for c in mascota.condiciones.all %}
+                                        <span>{{ c.nombre }}</span>
+                                    {% endfor %}
+                                </li>
+                            {% endif %}
+                        </ul>
+
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- ======================================================
+ SCRIPT: CARGA DE RAZAS SEGÚN LA ESPECIE (AJAX)
+======================================================= -->
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    const especieSelect = document.querySelector('#id_especie');
+    const razaSelect = document.querySelector('#id_raza');
+    const url = "{% url 'cargar_razas_ajax' %}";
+
+    /* Función que actualiza dinámicamente la lista de razas
+       dependiendo de la especie seleccionada */
+    function actualizarRazas() {
+
+        const especieId = especieSelect.value;
+        
+        // Si no selecciona especie, limpia y deshabilita
+        if (!especieId) {
+            razaSelect.innerHTML = '<option value="">(Primero elige una especie)</option>';
+            razaSelect.disabled = true;
+            return;
+        }
+
+        // Indicador de carga
+        razaSelect.innerHTML = '<option value="">Cargando...</option>';
+        razaSelect.disabled = false;
+
+        // Petición AJAX para obtener razas relacionadas
+        fetch(`${url}?especie_id=${especieId}`)
+            .then(response => response.json())
+            .then(data => {
+                razaSelect.innerHTML = '<option value="">Selecciona una raza</option>';
+
+                // Rellena las opciones
+                data.forEach(function(raza) {
+                    razaSelect.innerHTML += 
+                        `<option value="${raza.id}">${raza.nombre}</option>`;
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                razaSelect.innerHTML = '<option value="">Error al cargar razas</option>';
+            });
+    }
+    
+    // Evento cuando cambie la especie
+    especieSelect.addEventListener('change', actualizarRazas);
+
+    // Carga inicial
+    actualizarRazas();
+
+});
+</script>
+{% endblock %}
+
+{% endblock %}

@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- Incluimos el CSS del formulario de registro/login -->
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<main class="d-flex justify-content-center align-items-center py-5" style="min-height: 90vh;">
+
+  <!-- Contenedor principal del formulario -->
+  <div class="login-card text-center">
+
+      <!-- Logo superior -->
+      <img src="{% static 'Img/Logo.png' %}" alt="SmartPet Logo" class="logo-formulario">
+
+      <!-- Títulos del formulario -->
+      <h2 class="text-center">¡Bienvenido!</h2>
+      <p class="text-center">Regístrate para crear tu cuenta</p>
+
+      <!-- Mensajes de éxito / error enviados desde Django -->
+      {% if messages %}
+          {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" style="text-align: left;">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+          {% endfor %}
+      {% endif %}
+
+      <!-- FORMULARIO DE REGISTRO -->
+      <form id="registerForm" method="post" autocomplete="off" novalidate>
+          {% csrf_token %}
+
+          <!-- Campo: Usuario -->
+          <div class="mb-3 text-start">
+              <label class="form-label fw-semibold">Usuario</label>
+              <div class="input-group">
+                  <span class="input-group-text">
+                      <img src="{% static 'Img/email.svg' %}" style="width:20px;">
+                  </span>
+
+                  <!-- Si hay errores, Django agrega 'is-invalid' -->
+                  <input type="text" name="username" id="id_username"
+                      class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                      placeholder="Ej: juanperez123" required
+                      value="{{ form.username.value|default_if_none:'' }}">
+              </div>
+
+              <!-- Muestra errores del campo -->
+              {% if form.username.errors %}
+              <div class="invalid-feedback d-block">
+                  {% for error in form.username.errors %}
+                      {{ error }}
+                  {% endfor %}
+              </div>
+              {% endif %}
+          </div>
+
+          <!-- Campo: Nombre -->
+          <div class="mb-3 text-start">
+              <label class="form-label fw-semibold">Nombre</label>
+              <div class="input-group">
+                  <span class="input-group-text">
+                      <img src="{% static 'Img/email.svg' %}" style="width:20px;">
+                  </span>
+                  <input type="text" name="first_name" id="id_first_name"
+                         class="form-control {% if form.first_name.errors %}is-invalid{% endif %}"
+                         placeholder="Tu nombre" required
+                         value="{{ form.first_name.value|default_if_none:'' }}">
+              </div>
+
+              {% if form.first_name.errors %}
+              <div class="invalid-feedback d-block">
+                  {% for error in form.first_name.errors %}
+                      {{ error }}
+                  {% endfor %}
+              </div>
+              {% endif %}
+          </div>
+
+          <!-- Campo: Apellido -->
+          <div class="mb-3 text-start">
+              <label class="form-label fw-semibold">Apellido</label>
+              <div class="input-group">
+                  <span class="input-group-text">
+                      <img src="{% static 'Img/email.svg' %}" style="width:20px;">
+                  </span>
+                  <input type="text" name="last_name" id="id_last_name"
+                         class="form-control {% if form.last_name.errors %}is-invalid{% endif %}"
+                         placeholder="Tu apellido" required
+                         value="{{ form.last_name.value|default_if_none:'' }}">
+              </div>
+
+              {% if form.last_name.errors %}
+              <div class="invalid-feedback d-block">
+                  {% for error in form.last_name.errors %}
+                      {{ error }}
+                  {% endfor %}
+              </div>
+              {% endif %}
+          </div>
+
+          <!-- Campo: Correo electrónico -->
+          <div class="mb-3 text-start">
+              <label class="form-label fw-semibold">Correo electrónico</label>
+              <div class="input-group">
+                  <span class="input-group-text">
+                      <img src="{% static 'Img/email.svg' %}" style="width:20px;">
+                  </span>
+                  <input type="email" name="email" id="id_email"
+                         class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                         placeholder="ejemplo@correo.com" required
+                         value="{{ form.email.value|default_if_none:'' }}">
+              </div>
+
+              {% if form.email.errors %}
+              <div class="invalid-feedback d-block">
+                  {% for error in form.email.errors %}
+                      {{ error }}
+                  {% endfor %}
+              </div>
+              {% endif %}
+          </div>
+
+          <!-- Campo: Contraseña -->
+          <div class="mb-3 text-start">
+              <label class="form-label fw-semibold">Contraseña</label>
+              <div class="input-group">
+                  <span class="input-group-text">
+                      <img src="{% static 'Img/contraseña.svg' %}" style="width:20px;">
+                  </span>
+                  <input type="password" name="password1" id="id_password1"
+                         class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
+                         placeholder="********" required>
+              </div>
+
+              {% if form.password1.errors %}
+              <div class="invalid-feedback d-block">
+                  {% for error in form.password1.errors %}
+                      {{ error }}
+                  {% endfor %}
+              </div>
+              {% endif %}
+          </div>
+
+          <!-- Campo: Confirmación de contraseña -->
+          <div class="mb-4 text-start">
+              <label class="form-label fw-semibold">Confirmar contraseña</label>
+              <div class="input-group">
+                  <span class="input-group-text">
+                      <img src="{% static 'Img/contraseña.svg' %}" style="width:20px;">
+                  </span>
+                  <input type="password" name="password2" id="id_password2"
+                         class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
+                         placeholder="********" required>
+              </div>
+
+              {% if form.password2.errors %}
+              <div class="invalid-feedback d-block">
+                  {% for error in form.password2.errors %}
+                      {{ error }}
+                  {% endfor %}
+              </div>
+              {% endif %}
+          </div>
+
+          <!-- Errores generales del formulario -->
+          {% if form.non_field_errors %}
+          <div class="alert alert-danger">
+              {% for error in form.non_field_errors %}
+                  {{ error }}
+              {% endfor %}
+          </div>
+          {% endif %}
+
+          <!-- Botón de registro -->
+          <button type="submit" class="btn-login">Registrarse</button>
+
+          <!-- Enlace a login -->
+          <div class="text-center text-register mt-3">
+              <p>¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión</a></p>
+          </div>
+
+      </form>
+  </div>
+</main>
+
+<!-- JS externo con validaciones adicionales -->
+<script src="{% static 'js/validacion_registro.js' %}"></script>
+
+{% endblock %}

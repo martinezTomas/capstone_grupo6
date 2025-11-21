@@ -1,0 +1,41 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block content %}
+
+<!-- Contenedor principal centrado con margen superior -->
+<div class="container text-center my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+
+      <!-- Título principal de confirmación -->
+      <h1>✅ ¡Tu pago fue aprobado!</h1>
+
+      <!-- Mensaje de agradecimiento personalizado -->
+      <p class="lead">
+        Muchas gracias por tu compra, {{ request.user.username }}.
+      </p>
+
+      <!-- Bloque que se muestra solo si existe un pedido asociado -->
+      {% if pedido %}
+        <div class="alert alert-success">
+          <!-- Número de pedido confirmado -->
+          Hemos confirmado tu Pedido N°: <strong>#{{ pedido.id }}</strong>
+        </div>
+      {% endif %}
+
+      <!-- Mensaje adicional para informar sobre actualización y stock -->
+      <p>
+        Hemos actualizado tu pedido y descontado el stock. Ya puedes volver al inicio.
+      </p>
+
+      <!-- Botón de acción para regresar a la página principal -->
+      <a href="{% url 'index' %}" class="btn btn-primary btn-lg">
+        Volver al inicio
+      </a>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

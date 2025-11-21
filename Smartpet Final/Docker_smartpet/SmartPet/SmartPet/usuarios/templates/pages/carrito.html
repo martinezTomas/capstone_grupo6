@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+    
+    <link rel="stylesheet" href="{% static 'css/carrito.css' %}">
+
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert shadow-sm alert-dismissible fade show">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold">Tu Carrito de Compras 🛒</h2>
+    </div>
+
+    <div class="alert text-center py-2 shadow-sm d-none info-envio">
+       ℹ️ ¡Recuerda que el envío es gratis sobre $30.000! 
+    </div>
+
+    <div class="row">
+        <!-- LISTA DE PRODUCTOS -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="mb-3 fw-bold">Productos en tu carrito</h5>
+
+                    <div class="table-responsive">
+                        <table class="table align-middle table-hover" id="tabla-carrito">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;">Producto</th>
+                                    <th>Nombre</th>
+                                    <th class="text-center" style="min-width: 120px;">Cantidad</th>
+                                    <th class="text-center">Precio Unit.</th>
+                                    <th class="text-center">Subtotal</th>
+                                    <th style="width: 100px;"></th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="carrito-body">
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-5">
+                                        <div class="spinner-border spinner-border-sm"></div>
+                                        Cargando carrito...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-end mt-3">
+                        <button id="vaciar-carrito" class="btn btn-sm btn-vaciar">Vaciar carrito</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- RESUMEN -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 carrito-resumen">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Resumen de compra</h5>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span id="subtotal" class="fw-medium">$0</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Envío:</span>
+                        <span id="envio" class="fw-medium">Por calcular...</span>
+                    </div>
+
+                    <hr class="my-2">
+
+                    <div class="d-flex justify-content-between fw-bold fs-5 mb-3">
+                        <span>Total:</span>
+                        <span id="total">$0</span>
+                    </div>
+
+                    <a href="{% url 'checkout' %}" id="btn-proceder-pago" class="btn w-100 btn-proceder">
+                        Proceder al pago
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<!-- Bloquear botón de pago si carrito vacío -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const btnPagar = document.getElementById('btn-proceder-pago');
+    const subtotalSpan = document.getElementById('subtotal');
+    const tablaBody = document.getElementById('carrito-body');
+
+    if (!btnPagar || !subtotalSpan || !tablaBody) return;
+
+    function revisarCarrito() {
+        // Buscar filas reales (sin mensajes vacíos ni "cargando")
+        const filas = Array.from(tablaBody.querySelectorAll('tr')).filter(tr => {
+            const texto = tr.textContent.toLowerCase();
+            return !texto.includes('vacío') && !texto.includes('cargando') && !texto.includes('error');
+        });
+
+        // Obtener el número del subtotal
+        const subtotalNum = parseInt(subtotalSpan.textContent.replace(/[^\d]/g, '')) || 0;
+
+        const carritoVacio = filas.length === 0 || subtotalNum === 0;
+
+        if (carritoVacio) {
+            // Desactivar botón
+            btnPagar.classList.add('disabled');
+            btnPagar.setAttribute('aria-disabled', 'true');
+            btnPagar.style.opacity = '0.6';
+            btnPagar.addEventListener('click', prevenirClick);
+        } else {
+            // Activar botón 
+            btnPagar.classList.remove('disabled');
+            btnPagar.removeAttribute('aria-disabled');
+            btnPagar.style.opacity = '1';
+            btnPagar.removeEventListener('click', prevenirClick);
+        }
+    }
+
+    // Función para prevenir el clic si está deshabilitado
+    function prevenirClick(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    // Revisar cuando el carrito se actualice dinámicamente
+    window.addEventListener('carritoActualizado', revisarCarrito);
+
+    // Revisar una vez al inicio (cuando ya hay productos cargados)
+    setTimeout(revisarCarrito, 800);
+});
+</script>
+
+{% endblock %}

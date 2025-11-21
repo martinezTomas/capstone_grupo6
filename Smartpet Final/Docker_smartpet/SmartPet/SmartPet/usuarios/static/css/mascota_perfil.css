@@ -1,0 +1,169 @@
+/* ============================================================
+   SMARTPET – Estilo para Perfil de Mascota
+   Paleta:
+   - Primario: #096C8A
+   - Secundario: #064B63
+   - Acento: #0BAA8C
+   ============================================================ */
+
+/* General */
+body {
+    background-color: #F5F9FA;
+}
+
+/* Card general */
+.card {
+    border-radius: 12px;
+    border: none;
+    overflow: hidden;
+}
+
+.card-body {
+    padding: 2rem 2.5rem;
+}
+
+/* --------------------------------------------
+   FOTO MASCOTA
+-------------------------------------------- */
+.mascota-foto,
+.img-fluid {
+    max-width: 150px;
+    border-radius: 10px;
+    object-fit: cover;
+    background-color: #e9f3f5;
+    padding: 5px;
+    border: 2px solid #d6e6ea;
+}
+
+@media (max-width: 576px) {
+    .mascota-foto,
+    .img-fluid {
+        max-width: 120px;
+    }
+}
+
+/* --------------------------------------------
+   TITULOS
+-------------------------------------------- */
+h2, h3, h4, h5 {
+    color: #064B63;
+    font-weight: 700;
+}
+
+/* Lista de datos de mascota */
+ul.list-unstyled li {
+    margin-bottom: 6px;
+    font-size: 1rem;
+}
+
+/* Badges de condiciones médicas */
+.badge {
+    font-size: 0.78rem;
+    padding: 6px 10px;
+    margin-right: 5px;
+    margin-top: 4px;
+}
+
+/* --------------------------------------------
+   PRODUCTOS RECOMENDADOS
+-------------------------------------------- */
+
+.product .card {
+    transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+
+.product:hover {
+    transform: translateY(-5px);
+}
+
+.card-img-top {
+    height: 220px;
+    object-fit: contain;
+    padding: 15px;
+}
+
+/* Títulos de producto */
+.text-primario {
+    color: #096C8A !important;
+}
+
+.btn-outline-primario {
+    border: 2px solid #096C8A;
+    color: #096C8A;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.btn-outline-primario:hover {
+    background-color: #096C8A;
+    color: #fff;
+}
+
+/* Badge de OFERTA */
+.bg-primario {
+    background-color: #096C8A !important;
+}
+
+/* Botón limpiar (cuando no hay productos) */
+.btn-limpiar {
+    background-color: #096C8A;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 6px;
+    transition: 0.3s ease;
+}
+
+.btn-limpiar:hover {
+    background-color: #064B63;
+}
+
+/* --------------------------------------------
+   BOTONES DE ACCIONES (Modificar / Eliminar)
+-------------------------------------------- */
+.acciones {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 10px;
+}
+
+.acciones .btn-sm {
+    background-color: #EAF4F6;
+    border: 1px solid #d1e5ea;
+    color: #064B63;
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: 0.3s ease;
+}
+
+.acciones .btn-sm:hover {
+    background-color: #096C8A;
+    color: #fff;
+}
+
+/* --------------------------------------------
+   RESPONSIVE
+-------------------------------------------- */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    h2, h3, h4 {
+        text-align: center;
+    }
+
+    .acciones {
+        position: static;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-img-top {
+        height: 180px;
+    }
+}

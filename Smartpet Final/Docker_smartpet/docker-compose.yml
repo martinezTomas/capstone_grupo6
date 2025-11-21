@@ -1,0 +1,9 @@
+services:
+  web:
+    build: .
+    container_name: smartpet_web
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    restart: always

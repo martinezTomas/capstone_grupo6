@@ -1,0 +1,379 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    #carrito {
+      display: none !important;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<main class="checkout-page">
+  <div class="container my-5">
+    <div class="row g-4">
+
+      <!-- COLUMNA IZQUIERDA – FORMULARIO COMPLETO -->
+      <div class="col-lg-8">
+        <div class="checkout-card p-4 shadow-sm">
+          <h4 class="mb-4 fw-bold">Detalles de Envío</h4>
+
+          <form id="checkoutForm" method="post" action="{% url 'iniciar_pago' %}" novalidate>
+            {% csrf_token %}
+
+            <!-- Tipo de envío -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold">¿Cómo quieres recibir tu pedido?</label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="tipo_envio" id="retiroLocal" value="retiro" checked>
+                <label class="form-check-label">Retiro en local <span class="text-muted">(Gratuito)</span></label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="tipo_envio" id="despachoDomicilio" value="despacho">
+                <label class="form-check-label">Despacho a domicilio</label>
+              </div>
+            </div>
+
+            <!-- Información retiro -->
+            <div id="infoRetiro" class="alert alert-light border mt-3 p-3" style="display:block;">
+              <h6 class="fw-bold mb-2">📍 Punto de Retiro - SmartPet Chile</h6>
+              <p class="mb-1">Av. El Conquistador 741, Maipú, Santiago.</p>
+              <p class="mb-1">🕓 Lunes a Sábado: 10:00 - 19:00 hrs</p>
+              <p class="mb-2">📞 +56 9 9999 9999</p>
+              <div id="mapaRetiro" style="height: 180px; border-radius: 10px;"></div>
+              <div class="alert alert-success mt-3 mb-0 py-2 text-center fw-semibold">
+                ✅ ¡Perfecto! Puedes retirar tu pedido sin costo adicional.
+              </div>
+            </div>
+
+            <!-- Datos de contacto -->
+            <h5 class="mt-4 mb-3">Datos de Contacto</h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <input type="text" name="nombre" class="form-control required-field" placeholder="Nombre" value="{{ request.user.first_name }}">
+              </div>
+              <div class="col-md-6">
+                <input type="text" name="apellido" class="form-control required-field" placeholder="Apellidos" value="{{ request.user.last_name }}">
+              </div>
+              <div class="col-md-6">
+                <input type="text" name="rut" class="form-control required-field" placeholder="RUT">
+              </div>
+              <div class="col-md-6">
+                <input type="text" name="telefono" class="form-control required-field" placeholder="Teléfono">
+              </div>
+              <div class="col-12">
+                <input type="email" name="email" class="form-control required-field" placeholder="Email" value="{{ request.user.email }}">
+              </div>
+            </div>
+
+            <!-- Campos despacho -->
+            <div id="camposDespacho" class="mt-4" style="display: none;">
+              <h5 class="mb-3">Dirección de Despacho</h5>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <select id="regionSelect" name="region" class="form-select required-shipping-field">
+                    <option value="">Seleccione una región</option>
+                    {% for region in regiones %}
+                      <option value="{{ region.id }}">{{ region.nombre }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <select id="comunaSelect" name="comuna" class="form-select required-shipping-field" disabled>
+                    <option value="">Seleccione una comuna</option>
+                  </select>
+                </div>
+                <div class="col-md-8">
+                  <input type="text" name="calle" id="checkout-calle" class="form-control required-shipping-field" placeholder="Calle">
+                </div>
+                <div class="col-md-4">
+                  <input type="text" name="numero" id="checkout-numero" class="form-control required-shipping-field" placeholder="Número">
+                </div>
+                <div class="col-12">
+                  <input type="text" name="depto_oficina" class="form-control" placeholder="Depto / Oficina (Opcional)">
+                </div>
+              </div>
+              <button type="button" class="btn btn-outline-primary w-100 my-3" id="btn-cotizar-checkout">
+                Calcular Costo de Envío
+              </button>
+              <div id="resultado-despacho-checkout" class="alert d-none"></div>
+            </div>
+
+            <!-- Botón pagar -->
+            <div class="text-center mt-4">
+              <button type="submit" id="btn-pagar-mercadopago" class="btn btn-lg btn-block btn-primary text-white">
+                Continuar al pago
+              </button>
+              <small class="text-muted d-block mt-2" id="pagar-helper" style="display: none;">
+                Debes calcular el costo de envío para poder pagar.
+              </small>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- COLUMNA DERECHA – RESUMEN DEL PEDIDO -->
+      <div class="col-lg-4">
+        <div class="checkout-summary p-4 shadow-sm">
+          <h5 class="fw-bold mb-3">Resumen del pedido</h5>
+
+          {% if items %}
+            {% for item in items %}
+              <div class="d-flex justify-content-between mb-2">
+                <span>{{ item.producto.nombre }} (x{{ item.cantidad }})</span>
+                <strong>${{ item.get_total|floatformat:0 }}</strong>
+              </div>
+            {% endfor %}
+            <hr>
+
+            <div class="d-flex justify-content-between fw-semibold">
+              <span>Subtotal:</span>
+              <span id="subtotal-carrito">${{ total|floatformat:0 }}</span>
+            </div>
+            <div class="d-flex justify-content-between fw-semibold">
+              <span>Envío:</span>
+              <span id="costo-envio-checkout">Gratis (Retiro)</span>
+            </div>
+
+            <hr>
+
+            <div class="d-flex justify-content-between fw-bold fs-5 text-success">
+              <span>Total:</span>
+              <span id="total-pagar-checkout">${{ total|floatformat:0 }}</span>
+            </div>
+          {% else %}
+            <p>Tu carrito está vacío.</p>
+          {% endif %}
+        </div>
+
+        <div class="checkout-mercadopago p-3 mt-3 text-center shadow-sm">
+          <img src="{% static 'Img/mercadopagologo.webp' %}" alt="Mercado Pago" class="mp-logo mb-2">
+          <p class="mp-text">
+            Tu pago será procesado de forma segura a través de <strong>Mercado Pago</strong>.
+            Tecnología de protección avanzada para tus datos 🔒.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Referencias
+  const form = document.getElementById("checkoutForm");
+  const regionSelect = document.getElementById("regionSelect");
+  const comunaSelect = document.getElementById("comunaSelect");
+  const radioRetiro = document.getElementById("retiroLocal");
+  const radioDespacho = document.getElementById("despachoDomicilio");
+  const camposDespacho = document.getElementById("camposDespacho");
+  const infoRetiro = document.getElementById("infoRetiro");
+  const calleInput = document.getElementById('checkout-calle');
+  const numeroInput = document.getElementById('checkout-numero');
+  const btnCotizar = document.getElementById('btn-cotizar-checkout');
+  const resultadoDiv = document.getElementById('resultado-despacho-checkout');
+  const btnPagar = document.getElementById("btn-pagar-mercadopago");
+  const costoEnvioSpan = document.getElementById("costo-envio-checkout");
+  const totalSpan = document.getElementById("total-pagar-checkout");
+  const pagarHelper = document.getElementById('pagar-helper');
+  
+  const subtotalCarrito = parseFloat("{{ total }}");
+  const urlGetComunas = "{% url 'get_comunas' %}";
+  const urlCotizarCheckout = "{% url 'api_cotizar_checkout' %}";
+
+  const formatCLP = (valor) => new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(valor);
+
+  // Toggle envío
+  function toggleEnvio() {
+    if (radioDespacho.checked) {
+      camposDespacho.style.display = 'block';
+      infoRetiro.style.display = 'none';
+      resetearCotizacion();
+    } else {
+      camposDespacho.style.display = 'none';
+      infoRetiro.style.display = 'block';
+      costoEnvioSpan.textContent = "Gratis (Retiro)";
+      totalSpan.textContent = formatCLP(subtotalCarrito);
+      btnPagar.disabled = false;
+      pagarHelper.style.display = 'none';
+      resultadoDiv.className = 'alert d-none';
+    }
+  }
+  
+  radioRetiro.addEventListener("change", toggleEnvio);
+  radioDespacho.addEventListener("change", toggleEnvio);
+  toggleEnvio();
+
+  // Mapa Leaflet
+  try {
+    const mapa = L.map('mapaRetiro').setView([-33.501, -70.755], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(mapa);
+    L.marker([-33.501, -70.755]).addTo(mapa)
+      .bindPopup('<b>SmartPet Chile</b><br>Av. El Conquistador 741, Maipú.')
+      .openPopup();
+  } catch(e) {
+    console.warn("Error al inicializar el mapa: ", e);
+  }
+
+  // Cargar comunas
+  regionSelect.addEventListener("change", function () {
+    const regionId = this.value;
+    comunaSelect.innerHTML = '<option value="">Cargando...</option>';
+    comunaSelect.disabled = true;
+    resetearCotizacion();
+    
+    if (!regionId) {
+      comunaSelect.innerHTML = '<option value="">Seleccione una comuna</option>';
+      comunaSelect.disabled = false;
+      return;
+    }
+
+    fetch(`${urlGetComunas}?region_id=${regionId}`)
+      .then(res => res.ok ? res.json() : Promise.reject(res))
+      .then(comunas => {
+        comunaSelect.innerHTML = '<option value="">Seleccione una comuna</option>';
+        comunas.forEach(c => {
+          const opt = document.createElement("option");
+          opt.value = c.id;
+          opt.textContent = c.nombre;
+          comunaSelect.appendChild(opt);
+        });
+        comunaSelect.disabled = false;
+      })
+      .catch(() => {
+        comunaSelect.innerHTML = '<option value="">Error al cargar comunas</option>';
+      });
+  });
+
+  // Validación
+  form.addEventListener("submit", function (e) {
+    if (radioDespacho.checked && btnPagar.disabled) {
+      e.preventDefault();
+      mostrarResultado("Por favor, calcula el costo de envío antes de continuar.", "warning");
+      return;
+    }
+
+    const campos = form.querySelectorAll(".required-field");
+    let valido = true;
+    
+    campos.forEach(campo => {
+      if (campo.value.trim() === "") {
+        campo.classList.add("is-invalid");
+        valido = false;
+      } else {
+        campo.classList.remove("is-invalid");
+      }
+    });
+
+    if (radioDespacho.checked) {
+      const camposEnvio = form.querySelectorAll(".required-shipping-field");
+      camposEnvio.forEach(campo => {
+        if (campo.value.trim() === "") {
+          campo.classList.add("is-invalid");
+          valido = false;
+        } else {
+          campo.classList.remove("is-invalid");
+        }
+      });
+    }
+
+    if (!valido) {
+      e.preventDefault();
+      alert("⚠️ Por favor completa todos los campos requeridos antes de continuar.");
+      return;
+    }
+    
+    btnPagar.disabled = true;
+    btnPagar.textContent = "Procesando...";
+  });
+
+  // Lógica cotización
+  comunaSelect.addEventListener('change', resetearCotizacion);
+  calleInput.addEventListener('input', resetearCotizacion);
+  numeroInput.addEventListener('input', resetearCotizacion);
+
+  btnCotizar.addEventListener('click', function() {
+    const comunaId = comunaSelect.value;
+    const calleVal = calleInput.value;
+    const numeroVal = numeroInput.value;
+
+    if (!comunaId || !calleVal || !numeroVal) {
+      mostrarResultado('Por favor, completa Región, Comuna, Calle y Número.', 'danger');
+      return;
+    }
+
+    btnCotizar.disabled = true;
+    btnCotizar.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Calculando...';
+    mostrarResultado('Calculando...', 'info');
+
+    const url = `${urlCotizarCheckout}?comuna_id=${comunaId}&calle=${calleVal}&numero=${numeroVal}`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) throw new Error(data.error);
+
+        const precioEnvio = data.precio;
+        const servicioEnvio = data.servicio;
+        const nuevoTotal = subtotalCarrito + precioEnvio;
+
+        costoEnvioSpan.textContent = formatCLP(precioEnvio);
+        totalSpan.textContent = formatCLP(nuevoTotal);
+        mostrarResultado(`Costo de envío: <strong>${formatCLP(precioEnvio)}</strong> (${servicioEnvio})`, 'success');
+        
+        btnPagar.disabled = false;
+        pagarHelper.style.display = 'none';
+      })
+      .catch(error => {
+        console.error('Error al cotizar:', error);
+        mostrarResultado(`❌ ${error.message}`, 'danger');
+        costoEnvioSpan.textContent = '--';
+        totalSpan.textContent = formatCLP(subtotalCarrito);
+        btnPagar.disabled = true;
+        pagarHelper.style.display = 'block';
+      })
+      .finally(() => {
+        btnCotizar.disabled = false;
+        btnCotizar.innerHTML = 'Calcular Costo de Envío';
+      });
+  });
+
+  // Funciones auxiliares
+  function mostrarResultado(mensaje, tipo) {
+    resultadoDiv.innerHTML = mensaje;
+    resultadoDiv.className = `alert alert-${tipo} mt-3`;
+  }
+
+  function resetearCotizacion() {
+    if (!radioDespacho.checked) return;
+    btnPagar.disabled = true;
+    pagarHelper.style.display = 'block';
+    costoEnvioSpan.textContent = 'Por calcular';
+    totalSpan.textContent = formatCLP(subtotalCarrito);
+    resultadoDiv.className = 'alert d-none';
+  }
+});
+</script>
+
+<style>
+  #infoRetiro {
+    border-left: 4px solid #0d6efd;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+  }
+  #infoRetiro:hover {
+    background-color: #f1f8ff;
+    transform: scale(1.01);
+  }
+  .is-invalid {
+    border: 2px solid #dc3545 !important;
+    background-color: #ffe6e6 !important;
+  }
+</style>
+{% endblock %}

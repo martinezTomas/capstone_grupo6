@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}- Modificar a {{ mascota.nombre }}{% endblock %}
+
+{% block extra_css %} 
+    <!-- Carga el CSS específico para esta página -->
+    <link rel="stylesheet" href="{% static 'css/mis_mascotas.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+
+        <!-- Contenedor principal centrado -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4 p-md-5">
+
+                    <!-- Título de la vista -->
+                    <h4 class="fw-bold mb-4">✏️ Modificar a {{ mascota.nombre }}</h4>
+
+                    <!-- FORMULARIO PARA EDITAR LA MASCOTA -->
+                    <!-- El método POST envía cambios al backend -->
+                    <form method="POST" action="{% url 'mascota_modificar' mascota.slug %}" novalidate>
+                        {% csrf_token %}
+
+                        <!-- Campo: Nombre -->
+                        <div class="mb-3">
+                            <label for="{{ form.nombre.id_for_label }}" class="form-label">{{ form.nombre.label }}</label>
+                            {{ form.nombre }}
+                        </div>
+                        
+                        <!-- Campo: Especie -->
+                        <div class="mb-3">
+                            <label for="{{ form.especie.id_for_label }}" class="form-label">{{ form.especie.label }}</label>
+                            {{ form.especie }}
+                        </div>
+                        
+                        <!-- Campo: Raza (se cargará dinámicamente via AJAX) -->
+                        <div class="mb-3">
+                            <label for="{{ form.raza.id_for_label }}" class="form-label">{{ form.raza.label }}</label>
+                            {{ form.raza }}
+                        </div>
+
+                        <!-- Campo: Fecha de nacimiento -->
+                        <div class="mb-3">
+                            <label for="{{ form.fecha_nacimiento.id_for_label }}" class="form-label">{{ form.fecha_nacimiento.label }}</label>
+                            {{ form.fecha_nacimiento }}
+                        </div>
+
+                        <!-- Campo: Condiciones de la mascota (checkbox múltiples) -->
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.condiciones.label }}</label>
+
+                            <!-- Contenedor que agrupa los checkbox -->
+                            <div class="form-check-group" id="id_condiciones">
+                                {% for check in form.condiciones %}
+                                    <div class="form-check">
+                                        {{ check.tag }}  <!-- Input checkbox -->
+                                        <label for="{{ check.id_for_label }}" class="form-check-label">
+                                            {{ check.choice_label }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- BOTÓN PARA GUARDAR CAMBIOS -->
+                        <button type="submit" class="btn btn-primary w-100 mt-3">
+                            Guardar Cambios
+                        </button>
+
+                        <!-- Botón para volver si no se desea editar -->
+                        <a href="{% url 'mis_mascotas' %}" class="btn btn-outline-secondary w-100 mt-2">
+                            Cancelar
+                        </a>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    /* 
+        --- MANEJO DINÁMICO DE RAZAS ---
+        Cuando cambia la especie, el sistema carga via AJAX
+        las razas disponibles para esa especie.
+    */
+
+    const especieSelect = document.querySelector('#id_especie');
+    const razaSelect = document.querySelector('#id_raza');
+
+    /* URL que devuelve las razas por AJAX */
+    const url = "{% url 'cargar_razas_ajax' %}";
+
+    /* 
+        Función que solicita las razas al servidor
+        y las coloca en el select correspondiente.
+    */
+    function cargarRazas() {
+
+        const especieId = especieSelect.value;
+
+        /* Raza actualmente guardada del formulario (para preseleccionarla) */
+        const razaActual = "{{ form.raza.value }}";
+
+        /* Si no hay especie seleccionada, mostrar mensaje básico */
+        if (!especieId) {
+            razaSelect.innerHTML = '<option value="">(Selecciona una especie)</option>';
+            return;
+        }
+
+        /* Llamada fetch para cargar las razas */
+        fetch(`${url}?especie_id=${especieId}`)
+            .then(response => response.json())
+            .then(data => {
+                razaSelect.innerHTML = '<option value="">Selecciona una raza</option>';
+
+                /* Se agregan las razas recibidas al select */
+                data.forEach(function(raza) {
+
+                    /* Si esta raza es la que estaba guardada antes, la dejamos seleccionada */
+                    const seleccionada = (raza.id == razaActual) ? 'selected' : '';
+
+                    razaSelect.innerHTML += `
+                        <option value="${raza.id}" ${seleccionada}>${raza.nombre}</option>`;
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                razaSelect.innerHTML = '<option value="">Error al cargar razas</option>';
+            });
+    }
+
+    /* Cuando cambie la especie, recargar razas */
+    especieSelect.addEventListener('change', cargarRazas);
+
+    /* Cargar razas al entrar a la página, según la especie actual */
+    cargarRazas();
+});
+</script>
+{% endblock %}
+
+{% endblock %}

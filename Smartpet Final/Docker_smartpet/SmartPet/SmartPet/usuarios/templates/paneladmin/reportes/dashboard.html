@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}- Reporte de Ventas{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+    <!-- Encabezado principal del reporte -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">📊 Reporte de Ventas</h2>
+    </div>
+
+    <!-- ==================== TARJETAS RESUMEN (KPI's) ==================== -->
+    <div class="row g-4 mb-5">
+
+        <!-- Tarjeta: Ingresos Totales -->
+        <div class="col-md-6">
+            <div class="card text-white bg-success shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-uppercase opacity-75">Ingresos Totales</h6>
+                    <!-- Se formatea con intcomma para separador de miles -->
+                    <h2 class="fw-bold display-5">${{ total_ingresos|intcomma }}</h2>
+                    <p class="card-text small">Ventas acumuladas (Aprobadas/Enviadas)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta: Total de Pedidos -->
+        <div class="col-md-6">
+            <div class="card text-white bg-primary shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-uppercase opacity-75">Total Pedidos</h6>
+                    <h2 class="fw-bold display-5">{{ total_pedidos }}</h2>
+                    <p class="card-text small">Transacciones exitosas</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ==================== GRÁFICOS PRINCIPALES ==================== -->
+    <div class="row mb-5">
+
+        <!-- Gráfico de barras (ventas últimos 7 días) -->
+        <div class="col-lg-8 mb-4 mb-lg-0">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white fw-bold">
+                    📈 Evolución Ventas (Últimos 7 días)
+                </div>
+                <div class="card-body">
+                    <!-- Aquí se dibuja el gráfico con Chart.js -->
+                    <canvas id="graficoVentas"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico tipo dona (preferencias de envío) -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white fw-bold">🚚 Preferencia de Entrega</div>
+                <div class="card-body">
+                    <canvas id="graficoEnvios"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ==================== TABLA: TOP 5 PRODUCTOS ==================== -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0 fw-bold">🏆 Top 5 Productos Más Vendidos</h5>
+        </div>
+
+        <!-- Tabla responsive para dispositivos pequeños -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Producto</th>
+                        <th class="text-end pe-4">Unidades Vendidas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in productos_top %}
+                    <tr>
+                        <!-- Nombre del producto proveniente de la anotación 'producto__nombre' -->
+                        <td class="ps-4">{{ item.producto__nombre }}</td>
+
+                        <!-- Total vendido destacado -->
+                        <td class="text-end pe-4 fw-bold text-primary">
+                            {{ item.total_vendido }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center py-4 text-muted">
+                            No hay datos suficientes aún
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- ==================== DATOS PARA LOS GRÁFICOS (JSON seguro en template) ==================== -->
+{{ fechas_grafico|json_script:"data-fechas" }}
+{{ montos_grafico|json_script:"data-montos" }}
+{{ labels_envio|json_script:"data-labels-envio" }}
+{{ data_envio|json_script:"data-vals-envio" }}
+
+<!-- Carga de Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- ==================== CONFIGURACIÓN DE GRÁFICOS ==================== -->
+<script>
+    /*
+        Aquí se leen los datos insertados por Django de forma segura mediante
+        json_script, y se convierten en objetos JS que Chart.js puede usar.
+    */
+    const fechas = JSON.parse(document.getElementById('data-fechas').textContent);
+    const montos = JSON.parse(document.getElementById('data-montos').textContent);
+    const labelsEnvio = JSON.parse(document.getElementById('data-labels-envio').textContent);
+    const dataEnvio = JSON.parse(document.getElementById('data-vals-envio').textContent);
+
+    // ---------- Gráfico de barras: Ventas últimos 7 días ----------
+    const ctxVentas = document.getElementById('graficoVentas');
+    new Chart(ctxVentas, {
+        type: 'bar',
+        data: {
+            labels: fechas,
+            datasets: [{
+                label: 'Ventas ($)',
+                data: montos,
+                backgroundColor: 'rgba(13, 202, 240, 0.6)',
+                borderColor: 'rgba(13, 202, 240, 1)',
+                borderWidth: 1,
+                borderRadius: 5
+            }]
+        },
+        options: { 
+            responsive: true,
+            scales: { 
+                y: { beginAtZero: true } 
+            }
+        }
+    });
+
+    // ---------- Gráfico donut: Preferencias de envío ----------
+    const ctxEnvios = document.getElementById('graficoEnvios');
+    new Chart(ctxEnvios, {
+        type: 'doughnut',
+        data: {
+            labels: labelsEnvio,
+            datasets: [{
+                data: dataEnvio,
+                backgroundColor: ['#ffc107', '#0d6efd'],
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { 
+                legend: { position: 'bottom' } 
+            }
+        }
+    });
+</script>
+
+{% endblock %}

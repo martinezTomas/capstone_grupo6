@@ -1,0 +1,328 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/detalle_producto.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container my-5 producto-detalle">
+    <div class="row align-items-center">
+
+        <div class="col-md-6 text-center mb-4">
+            {% if producto.imagen %}
+            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="img-fluid sombra-producto rounded" style="max-height: 400px; object-fit: contain;">
+            {% else %}
+            <img src="{% static 'Img/sin-imagen.jpg' %}" alt="Sin imagen" class="img-fluid sombra-producto rounded" style="max-height: 400px; object-fit: contain;">
+            {% endif %}
+        </div>
+
+        <div class="col-md-6">
+            <div class="product">
+                <div class="product-txt">
+                    
+                    <!-- TÍTULO DEL PRODUCTO -->
+                    <h3 class="fw-bold product-title">{{ producto.nombre }}</h3>
+
+                    <!-- DESCRIPCIÓN -->
+                    <p class="product-description">{{ producto.descripcion|linebreaksbr }}</p>
+
+                    <!-- PRECIO -->
+                    <p class="product-price fw-bold fs-4">
+                        ${{ producto.precio|floatformat:0 }}
+                    </p>
+
+                    <ul class="list-unstyled product-info">
+                        <li><strong>Categoría:</strong> {{ producto.categoria|title }}</li>
+                        <li><strong>Especie:</strong> {{ producto.especie|title }}</li>
+                        {% if producto.marca %}
+                        <li><strong>Marca:</strong> {{ producto.marca|title }}</li>
+                        {% endif %}
+                        <li><strong>Peso:</strong> {{ producto.peso_kg }} kg</li>
+                        <li><strong>Dimensiones:</strong> {{ producto.alto_cm }} × {{ producto.ancho_cm }} × {{ producto.largo_cm }} cm</li>
+                    </ul>
+
+                    <div class="mt-4 d-flex flex-wrap gap-3">
+
+                        <!-- Simular despacho -->
+                        <button type="button" class="btn btn-outline-secondary btn-lg"
+                                data-bs-toggle="modal" data-bs-target="#modalSimuladorDespacho">
+                            Simular Despacho 🚚
+                        </button>
+
+                        <!-- Agregar al carrito -->
+                        <a href="#" class="btn btn-primary btn-lg agregar-carrito"
+                           data-id="{{ producto.id }}"
+                           data-img="{% if producto.imagen %}{{ producto.imagen.url }}{% else %}{% static 'Img/sin-imagen.jpg' %}{% endif %}"
+                           data-title="{{ producto.nombre|escapejs }}"
+                           data-desc="{{ producto.descripcion|default_if_none:''|truncatewords:15|escapejs }}">
+                           Agregar al Carrito 🛒
+                        </a>
+
+                        <a href="{% url 'catalogo' %}" class="btn btn-outline-secondary btn-lg">
+                            Volver al catálogo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRODUCTOS RELACIONADOS -->
+    {% if productos_relacionados %}
+    <div class="mt-5">
+        <h4 class="fw-bold product-rel-title">También te puede interesar</h4>
+        <div class="row row-cols-2 row-cols-md-4 g-3">
+            {% for p in productos_relacionados %}
+            <div class="col">
+                <a href="{% url 'detalle_producto' p.id %}" class="text-decoration-none text-dark d-block h-100">
+                    <div class="card h-100 shadow-sm">
+                        {% if p.imagen %}
+                        <img src="{{ p.imagen.url }}" class="card-img-top" alt="{{ p.nombre }}" style="height: 150px; object-fit: contain; padding: 10px;">
+                        {% else %}
+                        <img src="{% static 'Img/sin-imagen.jpg' %}" class="card-img-top" alt="Sin imagen" style="height: 150px; object-fit: contain; padding: 10px;">
+                        {% endif %}
+                        <div class="card-body text-center p-2">
+                            <h6 class="fw-bold small">{{ p.nombre|truncatechars:40 }}</h6>
+                            <p class="product-rel-price small mb-0">${{ p.precio|floatformat:0 }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- OPINIONES -->
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <h3 class="fw-bold mb-4 product-op-title">Opiniones de Clientes</h3>
+
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+
+                    {% if user.is_authenticated %}
+                        {% if ya_resenado %}
+                            <div class="alert alert-neutral" role="alert">
+                                👍 ¡Gracias! Ya has dejado tu opinión para este producto.
+                            </div>
+                        {% else %}
+                            <h5 class="card-title">Deja tu opinión</h5>
+                            <form method="POST" novalidate>
+                                {% csrf_token %}
+                                {{ form_resena|crispy }}
+                                <button type="submit" class="btn btn-primary mt-3">Enviar Reseña</button>
+                            </form>
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-neutral" role="alert">
+                            Debes <a href="{% url 'login' %}?next={{ request.path }}" class="alert-link">iniciar sesión</a>
+                            para dejar una reseña.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% for resena in resenas %}
+                <div class="card mb-3 shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h5 class="card-title fw-bold">{{ resena.usuario.username }}</h5>
+                            <span class="text-muted small">{{ resena.fecha_creacion|date:"d/m/Y" }}</span>
+                        </div>
+
+                        <!-- ESTRELLAS SIN COLOR -->
+                        <h6 class="card-subtitle mb-2 rating-stars">
+                            {% if resena.rating == 5 %}★★★★★{% elif resena.rating == 4 %}★★★★☆{% elif resena.rating == 3 %}★★★☆☆{% elif resena.rating == 2 %}★★☆☆☆{% elif resena.rating == 1 %}★☆☆☆☆{% endif %}
+                            <span class="rating-label">({{ resena.get_rating_display }})</span>
+                        </h6>
+
+                        <p class="card-text">{{ resena.comentario|linebreaksbr }}</p>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="alert alert-neutral text-center">Aún no hay opiniones para este producto.</div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+
+
+{# modal de calculo de despacho #}
+
+<div class="modal fade" id="modalSimuladorDespacho" tabindex="-1" aria-labelledby="simuladorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="simuladorLabel">🚚 Simular Costo de Despacho</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted">Selecciona tu región y comuna para estimar el costo de envío de este producto.</p>
+        
+        <form id="form-simulador-despacho">
+            
+            <div class="mb-3">
+              <label for="simulador-region" class="form-label fw-semibold">Región</label>
+              <select class="form-select" id="simulador-region" required size="4">
+                <option value="" selected disabled>Selecciona una región</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="simulador-comuna" class="form-label fw-semibold">Comuna</label>
+              <select class="form-select" id="simulador-comuna" required disabled size="4">
+                <option value="">Primero selecciona una región</option>
+              </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100" id="btn-calcular-despacho">
+              Calcular
+            </button>
+        </form>
+
+        <div id="resultado-despacho" class="alert mt-3 d-none">
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        const modalSimulador = document.getElementById('modalSimuladorDespacho');
+
+        // Si no existe (ej. en el login), no hace nada
+        if (!modalSimulador) {
+            return; 
+        }
+
+        const regionSelect = document.getElementById('simulador-region');
+        const comunaSelect = document.getElementById('simulador-comuna');
+        const formSimulador = document.getElementById('form-simulador-despacho');
+        const resultadoDiv = document.getElementById('resultado-despacho');
+        
+        // Usamos try/catch por si 'get_comunas' o 'api_get_regiones' no están definidos
+        
+        try {
+            const urlComunas = "{% url 'get_comunas' %}";
+            const urlRegiones = "{% url 'api_get_regiones' %}"; 
+
+            // --- 1. Cargar Regiones ---
+            modalSimulador.addEventListener('show.bs.modal', function () {
+                // Limpieza de modal
+                resultadoDiv.classList.add('d-none'); 
+                comunaSelect.disabled = true;
+                comunaSelect.innerHTML = '<option value="">Primero selecciona una región</option>';
+                regionSelect.value = "";
+
+                // Si ya las cargamos, no lo volvemos a hacer
+                if (regionSelect.options.length > 1) return;
+                
+                fetch(urlRegiones)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.json();
+                    })
+                    .then(data => {
+                        // data AHORA es la LISTA
+                        data.forEach(region => { 
+                            regionSelect.options.add(new Option(region.nombre, region.id));
+                        });
+                    })
+                    .catch(error => console.error("Error cargando regiones:", error));
+            });
+
+            // --- 2. Cargar Comunas ---
+            regionSelect.addEventListener('change', function() {
+                const regionId = this.value;
+                comunaSelect.innerHTML = '<option value="">Cargando...</option>';
+                comunaSelect.disabled = true;
+                resultadoDiv.classList.add('d-none');
+
+                if (!regionId) {
+                    comunaSelect.innerHTML = '<option value="">Primero selecciona una región</a ';
+                    return;
+                }
+
+                fetch(`${urlComunas}?region_id=${regionId}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.json();
+                    })
+                    .then(data => {
+                        comunaSelect.innerHTML = '<option value="" selected disabled>Selecciona una comuna</option>';
+                        // data es la LISTA
+                        data.forEach(comuna => { 
+                            comunaSelect.options.add(new Option(comuna.nombre, comuna.id));
+                        });
+                        comunaSelect.disabled = false;
+                    })
+                    .catch(error => console.error("Error cargando comunas:", error));
+            });
+
+            // --- 3. Escuchar el botón "Calcular" ---
+            formSimulador.addEventListener('submit', function(e) {
+            e.preventDefault(); // Evita que la página se recargue
+            
+            const comunaId = comunaSelect.value;
+            // Obtenemos el ID del producto desde la plantilla
+            const productoId = "{{ producto.id }}"; 
+
+            if (!comunaId || !productoId) {
+                resultadoDiv.innerHTML = 'Por favor, selecciona una región y comuna.';
+                resultadoDiv.className = 'alert alert-warning mt-3';
+                return;
+            }
+
+            const comunaNombre = comunaSelect.options[comunaSelect.selectedIndex].text;
+            const calcularBtn = document.getElementById('btn-calcular-despacho');
+
+            // Preparamos la UI para la carga
+            resultadoDiv.innerHTML = `Calculando despacho para <strong>${comunaNombre}</strong>...`;
+            resultadoDiv.className = 'alert alert-info mt-3';
+            calcularBtn.disabled = true;
+            calcularBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Calculando...';
+
+            // Preparamos la URL para llamar a nuestra API
+            const urlSimulador = `{% url 'api_simular_despacho' %}?producto_id=${productoId}&comuna_id=${comunaId}`;
+
+            // --- Aquí llamamos al Backend ---
+            fetch(urlSimulador)
+                .then(response => response.json())
+                .then(data => {
+                    // Si nuestra API nos devuelve un error
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    // Mostramos el precio (de la simulación)
+                    const precioFormateado = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(data.precio);
+                    
+                    resultadoDiv.innerHTML = `Costo de envío estimado: <strong>${precioFormateado}</strong> <br><small>Servicio: ${data.servicio}</small>`;
+                    resultadoDiv.className = 'alert alert-success mt-3';
+                })
+                .catch(error => {
+                    // Si algo falla (la API de Chilexpress, etc.)
+                    console.error('Error en la simulación:', error);
+                    resultadoDiv.innerHTML = `Error al calcular: ${error.message}`;
+                    resultadoDiv.className = 'alert alert-danger mt-3';
+                })
+                .finally(() => {
+                    // Volvemos a activar el botón
+                    calcularBtn.disabled = false;
+                    calcularBtn.innerHTML = 'Calcular';
+                });
+        });
+
+        } catch (e) {
+            console.error("Error: Faltan las URLs 'get_comunas' o 'api_get_regiones'.", e);
+        }
+    });
+</script>
+
+{% endblock %} 

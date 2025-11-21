@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %} <!-- ¡Añadido 'humanize' para los precios! -->
+
+{% block title %}- {{ titulo_pagina|default:"Catálogo" }}{% endblock %} 
+
+{% block extra_css %} 
+    <link rel="stylesheet" href="{% static 'css/catalogo.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container catalogo-container">
+    
+  <!-- TÍTULO -->
+  <h2 class="catalogo-title">{{ titulo_pagina|default:"Catálogo de Productos" }}</h2>
+
+  <!-- FILTROS -->
+  <div class="catalogo-filtros mb-5">
+    <form method="get" action="" id="filtroForm" class="row g-3 mb-4 align-items-end">
+      
+      <!-- Especie -->
+      <div class="col-md-3">
+        <label for="especie" class="form-label fw-semibold">Especie</label>
+        <select name="especie" id="especie" class="form-select">
+          <option value="">Todas las especies</option>
+          {% for e in especies %}
+          <option value="{{ e.nombre }}" {% if e.nombre == especie_actual %}selected{% endif %}>
+            {{ e.nombre|title }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Categoría -->
+      <div class="col-md-3">
+        <label for="categoria" class="form-label fw-semibold">Categoría</label>
+        <select name="categoria" id="categoria" class="form-select">
+          <option value="">Todas las categorías</option>
+          {% for c in categorias %}
+          <option value="{{ c.id }}" {% if c.id == categoria_actual %}selected{% endif %}>
+            {{ c.nombre|title }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Subcategoría -->
+      <div class="col-md-3">
+        <label for="subcategoria" class="form-label fw-semibold">Subcategoría</label>
+        <select name="subcategoria" id="subcategoria" class="form-select" {% if not subcategorias %}disabled{% endif %}>
+          <option value="">Todas las subcategorías</option>
+          {% for sc in subcategorias %}
+          <option value="{{ sc.nombre }}" {% if sc.nombre == subcategoria_actual %}selected{% endif %}>
+            {{ sc.nombre|title }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Marca -->
+      <div class="col-md-3">
+        <label for="marca" class="form-label fw-semibold">Marca</label>
+        <select name="marca" id="marca" class="form-select">
+          <option value="">Todas las marcas</option>
+          {% for m in marcas %}
+          <option value="{{ m.nombre }}" {% if m.nombre == marca_actual %}selected{% endif %}>
+            {{ m.nombre|title }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Rango de precios -->
+      <div class="col-md-6 offset-md-6 d-flex justify-content-end align-items-center gap-2 mt-3">
+        <label class="form-label fw-semibold mb-0 me-2">Precio:</label>
+        <input type="number" name="precio_min" value="{{ precio_min|default:'' }}" placeholder="Desde $" class="form-control" style="width: 120px;">
+        <input type="number" name="precio_max" value="{{ precio_max|default:'' }}" placeholder="Hasta $" class="form-control" style="width: 120px;">
+      </div>
+
+      <!-- Botones -->
+      <div class="col-12 text-center mt-4">
+        <button type="submit" class="btn btn-aplicar me-2">Aplicar filtros</button>
+        <a href="{% url 'catalogo' %}" class="btn btn-limpiar">Limpiar</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- TARJETAS DE PRODUCTOS -->
+  <div class="row">
+    {% for producto in productos %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm position-relative product">
+
+        <!-- Insignia de OFERTA -->
+        {% if producto.en_oferta %}
+          <span class="badge bg-primario position-absolute top-0 start-0 m-3" style="z-index: 10; font-size: 0.8rem; padding: 0.5em 0.7em;">OFERTA</span>
+        {% endif %}
+
+        <!-- Imagen del producto -->
+        <a href="{% url 'detalle_producto' producto.id %}">
+          {% if producto.imagen %}
+          <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}" style="height: 220px; object-fit: contain; padding: 15px;">
+          {% else %}
+          <img src="{% static 'Img/sin-imagen.jpg' %}" class="card-img-top" alt="Sin imagen" style="height: 220px; object-fit: contain; padding: 15px;">
+          {% endif %}
+        </a>
+
+        <div class="card-body text-center d-flex flex-column">
+          <h5 class="card-title fw-bold">
+            <a href="{% url 'detalle_producto' producto.id %}" class="text-decoration-none text-primario">{{ producto.nombre }}</a>
+          </h5>
+
+          <p class="card-text text-muted small flex-grow-1">{{ producto.descripcion|truncatewords:15 }}</p>
+
+          <!-- Precios -->
+          {% if producto.en_oferta and producto.precio_anterior %}
+            <p class="fs-5 fw-bold mb-0">
+              <span class="text-primario">${{ producto.precio|floatformat:0|intcomma }}</span>
+              <span class="text-muted text-decoration-line-through fs-6 ms-2">
+                ${{ producto.precio_anterior|floatformat:0|intcomma }}
+              </span>
+            </p>
+          {% else %}
+            <p class="text-primario fw-bold fs-5 mb-0">${{ producto.precio|floatformat:0|intcomma }}</p>
+          {% endif %}
+
+          <p class="text-muted small my-2">
+            <strong>{{ producto.categoria.nombre }}</strong> • {{ producto.especie.nombre }}
+          </p>
+
+          <!-- Botón de opciones -->
+        <button class="btn btn-outline-primario mt-2 agregar-carrito" data-id="{{ producto.id }}">
+            Ver Opciones
+        </button>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center my-5 py-5">
+      <h5 class="text-muted">No se encontraron productos con los filtros seleccionados 🐾</h5>
+      <a href="{% url 'catalogo' %}" class="btn btn-limpiar mt-3">Mostrar todos los productos</a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% block extra_js %} 
+<!--SCRIPT AJAX SUBCATEGORÍAS  -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const categoriaSelect = document.getElementById("categoria");
+    const subcategoriaSelect = document.getElementById("subcategoria");
+
+    // Validamos que existan los elementos
+    if (!categoriaSelect || !subcategoriaSelect) return;
+
+    categoriaSelect.addEventListener("change", function () {
+        const categoriaId = this.value;
+
+      
+        subcategoriaSelect.innerHTML = '<option value="">Cargando...</option>';
+        subcategoriaSelect.disabled = true; 
+
+        // Si el usuario eligió "Todas" (vacío), reseteamos y salimos
+        if (!categoriaId) {
+            subcategoriaSelect.innerHTML = '<option value="">Todas las subcategorías</option>';
+            subcategoriaSelect.disabled = false;
+            return;
+        }
+
+        // Usamos la URL para la función 'get_subcategorias'
+        fetch(`/api/subcategorias/formulario/?categoria_id=${categoriaId}`) 
+            .then(response => {
+                if (!response.ok) throw new Error('Error en la red');
+                return response.json();
+            })
+            .then(data => {
+                // Limpiamos el texto "Cargando..."
+                subcategoriaSelect.innerHTML = '<option value="">Todas las subcategorías</option>';
+
+                if (data.subcategorias && data.subcategorias.length > 0) {
+                    data.subcategorias.forEach(subcat => {
+                        const option = document.createElement("option");
+                        
+                        option.value = subcat.nombre; 
+                        
+                        option.textContent = subcat.nombre.charAt(0).toUpperCase() + subcat.nombre.slice(1);
+
+                        // PRE-SELECCIÓN: Para que no se pierda el filtro al recargar la página
+                        const actual = "{{ subcategoria_actual|default_if_none:''|escapejs }}";
+                        if (actual && subcat.nombre === actual) {
+                            option.selected = true;
+                        }
+
+                        subcategoriaSelect.appendChild(option);
+                    });
+                    subcategoriaSelect.disabled = false;
+                } else {
+                    subcategoriaSelect.innerHTML = '<option value="">(Sin subcategorías)</option>';
+                    subcategoriaSelect.disabled = true;
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                subcategoriaSelect.innerHTML = '<option value="">Error al cargar</option>';
+            });
+    });
+    // Si ya hay una categoría seleccionada al cargar la página, cargamos las subcategorías
+    if (categoriaSelect.value) {
+        // Simulamos un evento 'change' para activar la carga
+        categoriaSelect.dispatchEvent(new Event('change'));
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}
+
+
+

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- Contenedor principal bien centrado con separación vertical -->
+<main class="container my-5 text-center">
+    <div class="row justify-content-center">
+
+        <!-- Columna central que limita el ancho del contenido -->
+        <div class="col-md-8 col-lg-6">
+
+            <!-- Tarjeta visual donde se muestra el estado del pago -->
+            <div class="card p-4 shadow-sm">
+                <div class="card-body">
+
+                    <!-- Título principal con estilo de advertencia -->
+                    <h2 class="card-title text-warning mb-4">⏳ ¡Pago Pendiente!</h2>
+
+                    <!-- Mensaje explicativo general -->
+                    <p class="card-text fs-5">
+                        Tu pago está siendo procesado o requiere de tu acción para completarse.
+                    </p>
+
+                    <!-- Explicación adicional sobre Mercado Pago -->
+                    <p class="card-text">
+                        Recibirás un correo electrónico de Mercado Pago con las instrucciones si necesitas hacer algo más,
+                        o con la confirmación final de tu compra.
+                    </p>
+
+                    <!-- Mensajes que pueda enviar Django (informativos en este caso) -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-info" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- Botones de acción para el usuario -->
+                    <a href="{% url 'mis_pedidos' %}" class="btn btn-primary mt-3 me-2">
+                        Ver mis pedidos
+                    </a>
+                    
+                    <a href="#" class="btn btn-outline-secondary mt-3">
+                        Contactar Soporte
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+{% endblock %}

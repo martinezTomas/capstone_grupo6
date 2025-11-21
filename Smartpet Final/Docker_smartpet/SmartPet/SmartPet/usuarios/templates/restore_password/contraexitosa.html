@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Página de confirmación de contraseña exitosa -->
+<main class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="text-center p-4 shadow-sm rounded" style="background-color: #fff;">
+    <h2 class="text-success fw-bold mb-3">✅ ¡Contraseña actualizada!</h2>
+    <p>Tu nueva contraseña se guardó correctamente. Ya puedes iniciar sesión con ella.</p>
+    <a href="{% url 'login' %}" class="btn btn-success mt-3 px-4">Iniciar sesión</a>
+  </div>
+</main>
+{% endblock %}

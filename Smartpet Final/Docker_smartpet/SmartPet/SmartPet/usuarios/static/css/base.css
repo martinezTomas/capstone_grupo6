@@ -1,0 +1,593 @@
+/* Evitar scroll horizontal no deseado */
+main, section, .page-content, .catalogo-container, .container-fluid {
+    overflow-x: hidden;
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style: none;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: #fff;
+  color: #111;
+  padding-top: 105px; /* para compensar el header fijo */
+}
+
+/* =======================
+   HEADER Y MENÚ
+======================= */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1050;
+  background: #096C8A;
+  height: 105px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.menu {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4%;
+}
+
+/* LOGO */
+.logo img {
+  height: 95px;
+  width: auto;
+  display: block;
+}
+
+/* Solo los <ul> principales del menú, no los dropdowns */
+.menu .navbar > ul {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Quita subrayado y deja color blanco */
+.menu .navbar ul li a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: inline-block;
+  position: relative;
+}
+
+/* Efecto tipo tarjeta al pasar el mouse */
+.menu .navbar ul li a:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+/* Elimina cualquier subrayado del hover por defecto */
+.menu .navbar ul li a:focus,
+.menu .navbar ul li a:active {
+  text-decoration: none;
+  outline: none;
+}
+
+/* Efecto de clic suave */
+.menu .navbar ul li a:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+/* =============================
+   OPCIONAL: Indicador activo
+============================= */
+.menu .navbar ul li a.active {
+  background-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 3px 6px rgba(255, 255, 255, 0.1);
+}
+
+/* Ocultar input del menú móvil */
+#menu {
+  display: none;
+}
+
+/* Icono hamburguesa */
+.menu-icono {
+  width: 28px;
+  cursor: pointer;
+  display: none;
+}
+
+/* =======================
+   PANEL ADMIN (DROPDOWN)
+======================= */
+.panel-admin {
+  position: relative;
+}
+
+.admin-trigger {
+  background: #000000;
+  color: #fff !important;
+  border-radius: 6px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  gap: 6px;
+  transition: 0.25s ease;
+}
+
+.admin-trigger:hover {
+  background: #fff;
+  color: #0FA4C7 !important;
+  transform: translateY(-1px);
+}
+
+.panel-dropdown {
+  position: absolute;
+  top: 100%;
+  margin-top: 8px;
+  background: #fff;
+  border: none;
+  border-top: 3px solid;
+  border-radius: 10px;
+  padding: 6px 0;
+  min-width: 240px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+  transform: translateY(10px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s ease;
+  z-index: 1100;
+}
+
+/* Bootstrap agrega la clase .show al abrir */
+.panel-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.panel-dropdown .dropdown-header {
+  background: #0FA4C7;
+  color: #fff;
+  text-align: center;
+  font-weight: 700;
+  padding: 8px;
+  border-radius: 8px 8px 0 0;
+}
+
+.panel-dropdown .panel-item {
+  color: #222 !important;
+  font-weight: 500;
+  padding: 10px 16px;
+  transition: all 0.2s ease;
+}
+
+.panel-dropdown .panel-item:hover {
+  background: #064B63;
+  color: #fff !important;
+  transform: translateX(3px);
+}
+
+/* =======================
+   MINI CARRITO (DROPDOWN)
+======================= */
+.submenu {
+  position: relative;
+}
+
+#carrito {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  width: 360px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  padding: 15px;
+  transform: translateY(10px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s ease;
+  z-index: 1200;
+}
+
+/* Mostrar solo al hacer hover */
+.submenu:hover #carrito {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Mini-carrito tabla */
+#lista-carrito th,
+#lista-carrito td {
+  color: #111;
+  font-size: 14px;
+}
+
+#total-minicart {
+  font-weight: 700;
+}
+
+/* Botones */
+#carrito .btn {
+  border-radius: 6px;
+}
+
+#carrito .btn-dark {
+  background: #111;
+  border: none;
+}
+
+#carrito .btn-outline-danger {
+  border-color: #064B63;
+  color: #064B63;
+}
+
+#carrito .btn-outline-danger:hover {
+  background: #b50d0d;
+  color: #fff;
+}
+
+/* Contador burbuja */
+#contador-carrito {
+  font-size: 0.7rem;
+  padding: 2px 6px;
+}
+
+/* ===========================
+   MENÚ DE USUARIO (DROPDOWN)
+=========================== */
+
+/* Contenedor principal */
+.nav-item.dropdown {
+  position: relative;
+  overflow: visible !important;
+}
+
+/* Botón principal del usuario */
+.nav-item.dropdown > a.nav-link {
+  color: #ffffff;
+  font-weight: 600;
+  background: transparent;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+/* Efecto hover del botón */
+.nav-item.dropdown > a.nav-link:hover {
+  background-color: rgba(9, 108, 138, 0.15);
+  color: #ffffff;
+}
+
+/* ==============================
+   MENÚ DESPLEGABLE (Dropdown)
+============================== */
+.nav-item.dropdown .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: auto;
+  right: 0;
+  margin-top: 10px;
+  background: #ffffff;
+  border: none;
+  border-top: 3px solid #096C8A;
+  border-radius: 10px;
+  min-width: 220px;
+  padding: 6px 0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  transform: translateY(10px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s ease;
+  z-index: 1100;
+  overflow: visible !important;
+}
+
+/* Bootstrap agrega la clase .show al abrir */
+.nav-item.dropdown .dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Encabezado del menú */
+.nav-item.dropdown .dropdown-header {
+  background-color: #096C8A;
+  color: #fff;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 10px 8px;
+  border-radius: 10px 10px 0 0;
+}
+
+/* Elementos del menú */
+.nav-item.dropdown .dropdown-item {
+  color: #333;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 10px 18px;
+  transition: all 0.25s ease;
+}
+
+/* Hover de elementos */
+.nav-item.dropdown .dropdown-item:hover {
+  background-color: #096C8A;
+  color: #fff;
+  transform: translateX(4px);
+}
+
+/* Divisor */
+.nav-item.dropdown .dropdown-divider {
+  margin: 6px 0;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Botón de cerrar sesión */
+.nav-item.dropdown .dropdown-item.text-danger {
+  color: #B23A48 !important;
+  font-weight: 600;
+}
+
+.nav-item.dropdown .dropdown-item.text-danger:hover {
+  background-color: #B23A48 !important;
+  color: #fff !important;
+}
+
+/* Imagen del usuario */
+.nav-item.dropdown img.rounded-circle {
+  border: 2px solid #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.nav-item.dropdown img.rounded-circle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 6px rgba(9, 108, 138, 0.6);
+}
+
+.politicas {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+
+
+/* ==========================================
+   RESPONSIVE DESIGN - HEADER Y NAVBAR
+   ========================================== */
+
+/* Ajuste general para pantallas medianas */
+@media (max-width: 1200px) {
+  .menu {
+    padding: 0 2%;
+  }
+
+  .navbar ul li a {
+    padding: 8px 14px;
+    font-size: 0.95rem;
+  }
+
+  .logo img {
+    height: 80px;
+  }
+}
+
+/* ================================
+   MENÚ HAMBURGUESA (≤991px)
+   ================================ */
+@media (max-width: 991px) {
+
+  .menu {
+    position: relative;
+    flex-wrap: wrap;
+    padding: 0 15px;
+  }
+
+  /* Mostrar el ícono hamburguesa */
+  .menu-icono {
+    display: block;
+    cursor: pointer;
+    z-index: 1101;
+    filter: invert(1);
+  }
+
+  /* Ocultar el menú por defecto */
+  .navbar {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #064B63;
+    border-top: 3px solid #0BAA8C;
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding: 15px 0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    border-radius: 0 0 12px 12px;
+  }
+
+  /* Mostrar menú cuando se activa el checkbox */
+  #menu:checked ~ .navbar {
+    display: flex;
+    animation: slideDown 0.4s ease forwards;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Enlaces dentro del menú */
+  .navbar ul {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .navbar ul li {
+    width: 100%;
+  }
+
+  .navbar ul li a {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1rem;
+    color: #fff;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    transition: background 0.25s ease;
+  }
+
+  .navbar ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Ocultar elementos secundarios si no caben */
+  
+
+
+
+  .logo img {
+    height: 80px;
+  }
+
+  /* Mover el icono del menú a la derecha */
+  label[for="menu"] {
+    position: absolute;
+    right: 20px;
+    top: 35px;
+  }
+}
+
+/* ===============================================
+   REORDENAR HEADER EN RESPONSIVE (≤991px)
+   =============================================== */
+@media (max-width: 991px) {
+
+    /* Convertimos el header en un grid de 3 columnas */
+    .menu {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        width: 100%;
+    }
+
+    /* LOGO — queda al inicio siempre */
+    .logo {
+        grid-column: 1 / 2;
+        justify-self: start;
+    }
+
+    /* HAMBURGUESA — centrado perfecto */
+    label[for="menu"] {
+        grid-column: 2 / 3;
+        justify-self: center;
+        position: static !important;
+        top: auto;
+        right: auto;
+    }
+
+    /* CONTENEDOR DE ICONOS DERECHA */
+    .header-right-icons {
+        grid-column: 3 / 4;
+        justify-self: end;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-right: 5px;
+    }
+
+    /* Ajustar tamaño de iconos para móvil */
+    .header-right-icons img {
+        width: 26px;
+        height: 26px;
+    }
+
+    /* Asegura que el badge del carrito se vea encima */
+    .header-right-icons .minicount {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        font-size: 0.7rem;
+        padding: 2px 6px;
+    }
+    
+    /* Oculta el bloque donde se muestran dentro del menú */
+    .navbar .submenu,
+    .navbar .nav-item.dropdown,
+    .navbar .panel-admin {
+        display: none !important;
+    }
+}
+
+
+/* ==========================
+   AJUSTES PEQUEÑAS (≤600px)
+   ========================== */
+@media (max-width: 600px) {
+  
+
+  
+
+  .navbar ul li a {
+    font-size: 0.95rem;
+    padding: 12px 16px;
+  }
+
+  .footer {
+    padding: 20px;
+    text-align: center;
+  }
+
+  .footer .row {
+    flex-direction: column;
+  }
+
+  .footer img {
+    margin: 0 auto;
+  }
+}
+
+
+/* Alineación bonita y centrada en responsive */
+@media (max-width: 992px) {
+    .politicas {
+        text-align: center;
+    }
+}
+
+/* Alineación normal en pantallas grandes */
+@media (min-width: 993px) {
+    .politicas {
+        padding-left: 20px;
+    }
+}

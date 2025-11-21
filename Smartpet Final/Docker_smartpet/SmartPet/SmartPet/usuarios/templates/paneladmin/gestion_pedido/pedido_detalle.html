@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}- Detalle Pedido #{{ pedido.id }}{% endblock %}
+
+{% block content %}
+
+<!-- Contenedor principal con márgenes superiores e inferiores -->
+<div class="container my-5">
+
+    <!-- Encabezado superior: título + botón volver -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">
+            Detalle del Pedido <span class="text-primary">#{{ pedido.id }}</span>
+        </h2>
+
+        <!-- Botón para volver a la vista de lista de pedidos -->
+        <a href="{% url 'gestion_pedidos' %}" class="btn btn-outline-secondary">
+            &larr; Volver a la lista
+        </a>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- ============================
+             COLUMNA IZQUIERDA (Cliente + Envío + Estado)
+        ============================= -->
+        <div class="col-lg-5">
+
+            <!-- DATOS DEL CLIENTE -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0 fw-bold">Datos del Cliente</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Nombre:</strong> {{ pedido.nombre_cliente }} {{ pedido.apellido_cliente }}</p>
+                    <p><strong>Email:</strong> {{ pedido.email_cliente }}</p>
+                    <p><strong>Teléfono:</strong> {{ pedido.telefono_cliente|default:"-" }}</p>
+                    <p><strong>RUT:</strong> {{ pedido.rut_cliente|default:"-" }}</p>
+                </div>
+            </div>
+
+            <!-- DATOS DEL ENVÍO -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0 fw-bold">Datos del Envío</h5>
+                </div>
+                <div class="card-body">
+
+                    {% if pedido.calle %}
+                        <!-- Cuando es despacho a domicilio -->
+                        <p><strong>Tipo de Entrega:</strong> {{ pedido.tipo_envio }}</p>
+                        <p><strong>Región:</strong> {{ pedido.region.nombre|default:"-" }}</p>
+                        <p><strong>Comuna:</strong> {{ pedido.comuna.nombre|default:"-" }}</p>
+                        <p><strong>Dirección:</strong> {{ pedido.calle }} {{ pedido.numero }}</p>
+
+                        {% if pedido.depto_oficina %}
+                            <p><strong>Depto/Oficina:</strong> {{ pedido.depto_oficina }}</p>
+                        {% endif %}
+                    
+                    {% else %}
+                        <!-- Cuando el cliente retira en local -->
+                        <p><strong>Tipo de Entrega:</strong> Retiro en Local</p>
+                        <p class="text-muted">El cliente retira en el local.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- ESTADO DEL PEDIDO -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0 fw-bold">Estado del pedido</h5>
+                </div>
+
+                <div class="card-body">
+                    {% if pedido.estado == 'APROBADO' %}
+                        <h4 class="text-success fw-bold">✅ ¡Pago Exitoso!</h4>
+                        <p class="text-muted">Listo para preparar pedido.</p>
+
+                    {% elif pedido.estado == 'ENVIADO' %}
+                        <h4 class="text-primary fw-bold">🚚 Enviado</h4>
+                        <p class="text-muted">El pedido ya fue despachado con Chilexpress.</p>
+
+                    {% else %}
+                        <h4 class="text-warning fw-bold">⏳ Procesando...</h4>
+                        <p class="text-muted">Falta la confirmación del pago.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================
+             COLUMNA DERECHA (Productos del pedido)
+        ============================= -->
+        <div class="col-lg-7">
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0 fw-bold">Productos en el Pedido</h5>
+                </div>
+
+                <!-- Tabla sin padding lateral -->
+                <div class="card-body p-0">
+
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+
+                            <!-- Encabezado de la tabla -->
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="p-3">Producto</th>
+                                    <th class="p-3 text-center">Cantidad</th>
+                                    <th class="p-3 text-end">Precio Unit.</th>
+                                    <th class="p-3 text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <!-- Bucle por cada ítem del pedido -->
+                                {% for item in items %}
+                                <tr>
+
+                                    <!-- Producto (imagen + nombre + peso si existe) -->
+                                    <td class="p-3">
+                                        <div class="d-flex align-items-center">
+
+                                            <!-- Imagen del producto -->
+                                            <img src="{{ item.producto.imagen.url }}"
+                                                 alt="{{ item.producto.nombre }}"
+                                                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; margin-right: 15px;">
+
+                                            <!-- Nombre + peso opcional -->
+                                            <div>
+                                                <strong>{{ item.producto.nombre }}</strong>
+                                                <br>
+                                                {% if item.peso %}
+                                                    <small class="text-muted">{{ item.peso }}</small>
+                                                {% endif %}
+                                            </div>
+
+                                        </div>
+                                    </td>
+
+                                    <!-- Cantidad -->
+                                    <td class="text-center">{{ item.cantidad }}</td>
+
+                                    <!-- Precio unitario -->
+                                    <td class="text-end">
+                                        ${{ item.precio_unitario_congelado|floatformat:0|intcomma }}
+                                    </td>
+
+                                    <!-- Subtotal del ítem -->
+                                    <td class="text-end fw-bold">
+                                        ${{ item.get_subtotal|floatformat:0|intcomma }}
+                                    </td>
+
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Total del pedido -->
+                <div class="card-footer d-flex justify-content-end align-items-center bg-white p-3">
+                    <h4 class="mb-0 fw-bold text-success">
+                        Total Pagado: ${{ pedido.total|floatformat:0|intcomma }}
+                    </h4>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

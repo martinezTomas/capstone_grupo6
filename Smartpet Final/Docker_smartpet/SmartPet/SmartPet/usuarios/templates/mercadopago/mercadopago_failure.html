@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- Contenedor principal centrado -->
+<main class="container my-5 text-center">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <!-- Tarjeta con el mensaje de error -->
+            <div class="card p-4 shadow-sm">
+                <div class="card-body">
+
+                    <!-- Título principal del mensaje -->
+                    <h2 class="card-title text-danger mb-4">❌ ¡Pago Fallido!</h2>
+
+                    <!-- Descripción general del problema -->
+                    <p class="card-text fs-5">
+                        Lamentablemente, no pudimos procesar tu pago.
+                    </p>
+                    <p class="card-text">
+                        Esto puede deberse a fondos insuficientes, un error en los datos de la tarjeta
+                        o problemas técnicos. Por favor, intenta nuevamente.
+                    </p>
+
+                    <!-- Mensajes enviados desde Django (si existen) -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- Botones de acción -->
+                    <a href="{% url 'checkout' %}" class="btn btn-primary mt-3 me-2">
+                        Intentar de nuevo
+                    </a>
+
+                    <a href="#" class="btn btn-outline-secondary mt-3">
+                        Contactar Soporte
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+{% endblock %}

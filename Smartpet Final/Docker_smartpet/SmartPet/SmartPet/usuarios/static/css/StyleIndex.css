@@ -1,0 +1,186 @@
+/* ======================================================
+   🧩 SmartPet Index Styles
+   Paleta base:
+   - Primario: #096C8A
+   - Primario oscuro: #064B63
+   - Secundario: #0A8A6C
+   - Fondo claro: #F5F9FA
+   - Texto oscuro: #222
+====================================================== */
+
+body {
+  background-color: #F5F9FA;
+  color: #222;
+  font-family: "Segoe UI", Georgia, "Times New Roman", serif;
+}
+
+/* ======================================================
+   🎠 CARRUSEL PRINCIPAL
+====================================================== */
+.carousel-inner img {
+  height: 520px;
+  object-fit: cover;
+  border-bottom: 4px solid #096C8A;
+}
+
+.carousel-caption {
+  bottom: 20%;
+}
+
+.carousel-caption h2 span {
+  color: #0A8A6C;
+}
+
+.carousel-caption .btn {
+  background-color: #096C8A;
+  color: #fff;
+  border-radius: 8px;
+  border: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(9, 108, 138, 0.3);
+}
+
+.carousel-caption .btn:hover {
+  background-color: #064B63;
+  transform: translateY(-3px);
+}
+
+/* ======================================================
+   🛍️ PRODUCTOS DESTACADOS
+====================================================== */
+h2 {
+  color: #096C8A;
+}
+
+.product-card {
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  background: #fff;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(9, 108, 138, 0.25);
+}
+
+.product-card img {
+  height: 240px;
+  object-fit: contain;
+  border-bottom: 2px solid #e6f0f2;
+}
+
+.product-card .card-body h5 {
+  color: #064B63;
+}
+
+.product-card .btn-out {
+  background-color: transparent;
+  color: #096C8A;
+  border: 2px solid #096C8A;
+  border-radius: 6px;
+  padding: 6px 12px;
+  transition: all 0.3s ease;
+}
+
+.product-card .btn-out:hover {
+  background-color: #096C8A;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* Botón “Ver todo el catálogo” */
+section .btn {
+  background-color: #0A8A6C;
+  color: #fff;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 4px 10px rgba(10, 138, 108, 0.25);
+}
+
+section .btn:hover {
+  background-color: #076a52;
+  transform: translateY(-2px);
+}
+
+/* ======================================================
+   🐾 BENEFICIOS
+====================================================== */
+.bg-light {
+  background-color: #EAF4F6 !important;
+}
+
+section.bg-light h2 {
+  color: #096C8A;
+}
+
+section.bg-light i {
+  color: #0A8A6C;
+  transition: transform 0.3s ease;
+}
+
+section.bg-light i:hover {
+  transform: scale(1.15);
+}
+
+/* ======================================================
+   ❤️ CALL TO ACTION (REGISTRO)
+====================================================== */
+section.text-white {
+  background: linear-gradient(135deg, #096C8A, #0A8A6C);
+  padding: 60px 0;
+}
+
+section.text-white h2 {
+  color: #fff;
+}
+
+section.text-white p {
+  color: #f0f0f0;
+}
+
+section.text-white .btn-light {
+  color: #096C8A;
+  background-color: #fff;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+section.text-white .btn-light:hover {
+  background-color: #EAF4F6;
+  transform: translateY(-2px);
+}
+
+/* 📱 Tablets (≤992px) */
+@media (max-width: 992px) {
+  .carousel-inner img {
+    height: 300px !important; /* antes 360px */
+  }
+}
+
+/* 📱 Celulares grandes (≤768px) */
+@media (max-width: 768px) {
+  .carousel-inner img {
+    height: 240px !important; /* menos zoom */
+  }
+
+  .carousel-caption {
+    bottom: 6%;
+  }
+
+  .carousel-caption h2 {
+    font-size: 1.4rem;
+  }
+}
+
+/* 📱 Celulares pequeños (≤480px) */
+@media (max-width: 480px) {
+  .carousel-inner img {
+    height: 200px !important;
+  }
+
+  .carousel-caption p {
+    font-size: 0.8rem;
+  }
+}
+

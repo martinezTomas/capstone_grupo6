@@ -1,0 +1,166 @@
+
+/* CONTENEDOR GENERAL */
+.producto-detalle {
+    background-color: #ffffff;
+}
+
+/* ================ PRODUCTO PRINCIPAL ================= */
+
+.product-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #096C8A;
+    margin-bottom: 15px;
+}
+
+.product-description {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.product-price {
+    color: #0A8A6C;
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+/* LISTA DE INFORMACIÓN */
+.product-info li {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+/* IMAGEN CON SOMBRA */
+.sombra-producto {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10);
+    border-radius: 15px;
+}
+
+/* ===================== BOTONES ======================= */
+
+/* Botón principal SmartPet */
+.btn-primary {
+    background-color: #096C8A !important;
+    border-color: #096C8A !important;
+    font-weight: 600;
+    padding: 12px 30px;
+    border-radius: 10px;
+}
+
+.btn-primary:hover {
+    background-color: #064B63 !important;
+    border-color: #064B63 !important;
+    transform: translateY(-2px);
+    box-shadow: 0px 5px 10px rgba(9, 108, 138, 0.35);
+}
+
+/* Botón borde */
+.btn-outline-secondary {
+    color: #096C8A !important;
+    border-color: #096C8A !important;
+    border-radius: 10px;
+    padding: 12px 30px;
+    font-weight: 600;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #096C8A !important;
+    color: #fff !important;
+    transform: translateY(-2px);
+}
+
+/* ============= PRODUCTOS RELACIONADOS =============== */
+
+.product-rel-title {
+    font-size: 1.6rem;
+    color: #096C8A;
+    font-weight: 800;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(9, 108, 138, 0.20) !important;
+}
+
+.product-rel-price {
+    color: #0A8A6C !important;
+    font-weight: 700;
+}
+
+/* ====================== OPINIONES ====================== */
+
+.product-op-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #096C8A;
+}
+
+.alert-neutral {
+    background-color: #eef4f6;
+    border-left: 4px solid #096C8A;
+    padding: 15px;
+    color: #444;
+}
+
+.rating-stars {
+    font-size: 1.2rem;
+    color: #FFD700; /* Estrellas doradas */
+}
+
+.rating-label {
+    color: #777;
+    margin-left: 5px;
+}
+
+/* ====================== MODAL ====================== */
+
+.modal-content {
+    border-radius: 12px;
+    border: none;
+}
+
+.modal-header {
+    background-color: #096C8A;
+    color: white;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+#btn-calcular-despacho {
+    background-color: #0A8A6C;
+    border-color: #0A8A6C;
+    font-weight: 700;
+}
+
+#btn-calcular-despacho:hover {
+    background-color: #086F57;
+    border-color: #086F57;
+}
+
+/* ====================== RESPONSIVE ====================== */
+
+@media (max-width: 768px) {
+
+    .product-title {
+        font-size: 1.7rem;
+        text-align: center;
+    }
+
+    .product-price {
+        text-align: center;
+    }
+
+    .product-description,
+    .product-info {
+        text-align: center;
+    }
+
+    .btn-primary,
+    .btn-outline-secondary {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
