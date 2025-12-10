@@ -1,0 +1,113 @@
+/* =========================================
+   ESTILOS MI PERFIL (SmartPet Theme)
+   ========================================= */
+
+:root {
+    --sp-blue: #096C8A;       /* Azul Principal */
+    --sp-blue-dark: #064B63;  /* Azul Oscuro (Hover) */
+    --sp-green: #0A8A6C;      /* Verde (Acción Guardar/Éxito) */
+    --sp-green-dark: #086b53;
+}
+
+/* --- TARJETAS --- */
+.card-profile {
+    border-radius: 15px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Header para la vista de "Editar" (Fondo Azul) */
+.card-header-sp-edit {
+    background-color: var(--sp-blue);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 4px solid var(--sp-green); /* Detalle verde abajo */
+}
+
+/* --- TEXTOS --- */
+.profile-title {
+    color: var(--sp-blue);
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+
+.form-label-sp {
+    color: var(--sp-blue);
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+/* --- INPUTS PERSONALIZADOS --- */
+/* Hacemos que al hacer click el borde sea del azul de la marca */
+.form-control:focus {
+    border-color: var(--sp-blue);
+    box-shadow: 0 0 0 0.25rem rgba(9, 108, 138, 0.25);
+}
+
+/* Input de solo lectura (Username) */
+.input-readonly {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    color: #6c757d;
+    font-weight: 600;
+}
+
+/* --- BOTONES --- */
+
+/* Botón Guardar (Verde SmartPet) */
+.btn-sp-save {
+    background-color: var(--sp-green);
+    color: white;
+    border: none;
+    font-weight: 700;
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+
+.btn-sp-save:hover {
+    background-color: var(--sp-green-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(10, 138, 108, 0.3);
+}
+
+/* Botón Cancelar (Outline Azul) */
+.btn-sp-outline {
+    background-color: transparent;
+    color: var(--sp-blue);
+    border: 2px solid var(--sp-blue);
+    font-weight: 600;
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+
+.btn-sp-outline:hover {
+    background-color: #f0f8fa;
+    color: var(--sp-blue-dark);
+}
+
+/* --- EXTRAS (Vista Ver Perfil) --- */
+.form-value-sp {
+    font-size: 1.1rem;
+    color: #333;
+    background-color: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.avatar-circle {
+    width: 80px;
+    height: 80px;
+    background-color: var(--sp-green);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0 auto 20px auto;
+}

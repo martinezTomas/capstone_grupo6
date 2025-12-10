@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}- Mi Perfil{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/mi_perfil.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8 col-lg-6 mx-auto"> 
+            
+            <h2 class="profile-title text-center">Mi Perfil</h2>
+            
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success shadow-sm mb-4" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="card card-profile">
+                <div class="card-body p-4 p-md-5">
+                    
+                    <div class="avatar-circle mb-4">
+                        {{ usuario.username|slice:":1"|upper }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-sp">Nombre de Usuario:</label>
+                        <div class="form-value-sp">{{ usuario.username }}</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label-sp">Nombres:</label>
+                            <div class="form-value-sp">{{ usuario.first_name|default:"-" }}</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label-sp">Apellidos:</label>
+                            <div class="form-value-sp">{{ usuario.last_name|default:"-" }}</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-sp">Email:</label>
+                        <div class="form-value-sp">{{ usuario.email|default:"-" }}</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label-sp">Miembro desde:</label>
+                        <div class="form-value-sp bg-transparent border-0 ps-0 text-muted" style="font-size: 0.9rem;">
+                            {{ user.date_joined|date:"d F Y" }}
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+
+                    <div class="d-grid gap-3">
+                        <a href="{% url 'mi_perfil_editar' %}" class="btn btn-sp-primary btn-lg">
+                            <i class="fas fa-edit me-2"></i> Editar Datos
+                        </a>
+
+                        <a href="{% url 'cambiar_contrasena' %}" class="btn btn-sp-outline">
+                            <i class="fas fa-key me-2"></i> Cambiar Contraseña
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

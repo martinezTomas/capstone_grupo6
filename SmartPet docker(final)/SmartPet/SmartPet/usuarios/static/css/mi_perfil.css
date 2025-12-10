@@ -1,0 +1,90 @@
+/* =========================================
+   ESTILOS MI PERFIL (SmartPet Theme)
+   ========================================= */
+
+/* Variables de color (para mantener coherencia) */
+:root {
+    --sp-blue: #096C8A;
+    --sp-blue-dark: #064B63;
+    --sp-green: #0A8A6C;
+}
+
+/* Tarjeta Principal */
+.card-profile {
+    border-radius: 15px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Título de la página */
+.profile-title {
+    color: var(--sp-blue);
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+
+/* Etiquetas de los campos */
+.form-label-sp {
+    color: var(--sp-blue);
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+}
+
+/* Valores de los campos (el texto del usuario) */
+.form-value-sp {
+    font-size: 1.1rem;
+    color: #333;
+    background-color: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+/* Botón Principal (Editar Datos) - Azul */
+.btn-sp-primary {
+    background-color: var(--sp-blue);
+    color: white;
+    border: none;
+    font-weight: 600;
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+
+.btn-sp-primary:hover {
+    background-color: var(--sp-blue-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(9, 108, 138, 0.3);
+}
+
+/* Botón Secundario (Cambiar Contraseña) - Outline */
+.btn-sp-outline {
+    background-color: transparent;
+    color: var(--sp-blue);
+    border: 2px solid var(--sp-blue);
+    font-weight: 600;
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+
+.btn-sp-outline:hover {
+    background-color: var(--sp-blue);
+    color: white;
+}
+
+/* Avatar Placeholder (Opcional, círculo con inicial) */
+.avatar-circle {
+    width: 80px;
+    height: 80px;
+    background-color: var(--sp-green);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0 auto 20px auto;
+}

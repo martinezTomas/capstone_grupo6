@@ -1,0 +1,456 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block extra_css %}
+<style>
+    /* --- PALETA SMARTPET --- */
+    :root {
+        --sp-blue: #096C8A;
+        --sp-blue-dark: #064B63;
+        --sp-green: #0A8A6C;
+    }
+
+    /* Títulos de sección */
+    .section-title {
+        color: var(--sp-blue);
+        font-weight: 700;
+        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 8px;
+        margin-bottom: 20px;
+        margin-top: 30px;
+    }
+
+    /* Header de la tarjeta */
+    .card-header-sp {
+        background-color: var(--sp-blue);
+        color: white;
+        padding: 15px;
+        border-radius: 10px 10px 0 0;
+    }
+
+    /* Botón Principal */
+    .btn-sp {
+        background-color: var(--sp-blue);
+        color: white;
+        border: none;
+        transition: all 0.3s ease;
+    }
+    .btn-sp:hover {
+        background-color: var(--sp-blue-dark);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Botón Secundario (Outline) */
+    .btn-outline-sp {
+        border: 2px solid var(--sp-blue);
+        color: var(--sp-blue);
+        background: transparent;
+        font-weight: 600;
+    }
+    .btn-outline-sp:hover {
+        background-color: var(--sp-blue);
+        color: white;
+    }
+
+    /* Botón para Modals (+) */
+    .btn-add-sp {
+        background-color: var(--sp-green);
+        color: white;
+        border: none;
+    }
+    .btn-add-sp:hover {
+        background-color: #086b53; /* un poco más oscuro */
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-9">
+
+      <div class="card shadow-lg border-0 rounded-4">
+        
+        <div class="card-header-sp text-center">
+            <h4 class="mb-0 fw-bold">✏️ {{ titulo }}</h4>
+            <p class="mb-0 small opacity-75">Editando: {{ form.instance.nombre }}</p>
+        </div>
+
+        <div class="card-body p-4">
+
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <form method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              <h5 class="section-title">📝 Datos Básicos</h5>
+              
+              <div class="row">
+                  <div class="col-md-8">
+                      {{ form.nombre|as_crispy_field }}
+                  </div>
+                  <div class="col-md-4">
+                      <div class="mt-4 pt-2">
+                          {{ form.visible|as_crispy_field }}
+                      </div>
+                  </div>
+              </div>
+
+              {{ form.descripcion|as_crispy_field }}
+
+              <div class="row">
+                  <div class="col-md-4">{{ form.precio|as_crispy_field }}</div>
+                  <div class="col-md-4">{{ form.stock|as_crispy_field }}</div>
+                  <div class="col-md-4">
+                      {{ form.en_oferta|as_crispy_field }}
+                  </div>
+              </div>
+
+              {% if form.instance.imagen %}
+                  <div class="d-flex align-items-center gap-3 p-3 mb-3 bg-light rounded border">
+                      <img src="{{ form.instance.imagen.url }}" alt="Imagen actual" class="rounded shadow-sm" style="height: 100px; width: 100px; object-fit: cover;">
+                      <div>
+                          <p class="text-muted small mb-1 fw-bold">Imagen Actual</p>
+                          <small class="text-secondary">Si subes una nueva, esta se reemplazará.</small>
+                      </div>
+                  </div>
+              {% endif %}
+              
+              {{ form.imagen|as_crispy_field }}
+
+              <h5 class="section-title">🗂️ Clasificación</h5>
+
+              <div class="row">
+                  <div class="col-md-6">{{ form.categoria|as_crispy_field }}</div>
+                  <div class="col-md-6">{{ form.subcategoria|as_crispy_field }}</div>
+              </div>
+
+              <div class="mb-3">
+                  <label for="{{ form.especie.id_for_label }}" class="form-label requiredField">
+                      Especie<span class="asteriskField">*</span>
+                  </label>
+                  <div class="input-group">
+                      {{ form.especie }}
+                      <button type="button" class="btn btn-add-sp fw-bold fs-5" 
+                              data-bs-toggle="modal" 
+                              data-bs-target="#modalNuevaEspecie"
+                              title="Crear nueva especie">
+                          +
+                      </button>
+                  </div>
+                  {% if form.especie.errors %}
+                      <div class="text-danger small">{{ form.especie.errors }}</div>
+                  {% endif %}
+              </div>
+
+              <div class="mb-3">
+                  <label for="{{ form.marca.id_for_label }}" class="form-label requiredField">
+                      Marca<span class="asteriskField">*</span>
+                  </label>
+                  <div class="input-group">
+                      {{ form.marca }}
+                      <button type="button" class="btn btn-add-sp fw-bold fs-5" 
+                              data-bs-toggle="modal" 
+                              data-bs-target="#modalNuevaMarca"
+                              title="Crear nueva marca">
+                          +
+                      </button>
+                  </div>
+                  {% if form.marca.errors %}
+                      <div class="text-danger small">{{ form.marca.errors }}</div>
+                  {% endif %}
+              </div>
+
+              <h5 class="section-title">🔍 Filtros Específicos</h5>
+              
+              <div class="row">
+                  <div class="col-md-4">
+                      {{ form.edades|as_crispy_field }}
+                      <small class="text-muted fst-italic" style="font-size: 0.8rem;">(Ej: Cachorro, Adulto)</small>
+                  </div>
+                  <div class="col-md-4">
+                      {{ form.condiciones|as_crispy_field }}
+                      <small class="text-muted fst-italic" style="font-size: 0.8rem;">(Ej: Esterilizado)</small>
+                  </div>
+                  <div class="col-md-4">
+                      {{ form.razas|as_crispy_field }}
+                  </div>
+              </div>
+
+              <h5 class="section-title">📦 Dimensiones y Envío</h5>
+
+              <div class="row">
+                  <div class="col-md-3">{{ form.peso_kg|as_crispy_field }}</div>
+                  <div class="col-md-3">{{ form.alto_cm|as_crispy_field }}</div>
+                  <div class="col-md-3">{{ form.ancho_cm|as_crispy_field }}</div>
+                  <div class="col-md-3">{{ form.largo_cm|as_crispy_field }}</div>
+              </div>
+
+              <div class="d-grid gap-2 mt-5 mb-3">
+                  <button type="submit" class="btn btn-sp btn-lg fw-bold shadow-sm">
+                      <i class="fas fa-save me-2"></i> Guardar Cambios
+                  </button>
+                  <a href="{% url 'lista_productos_admin' %}" class="btn btn-outline-secondary">
+                      Cancelar
+                  </a>
+              </div>
+
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalNuevaMarca" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title" style="color: var(--sp-blue);">✨ Crear Nueva Marca</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="inputNombreMarca" class="form-control" placeholder="Ej: Royal Canin">
+        <div id="msgMarca" class="text-danger mt-2" style="display:none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-sp" onclick="guardarDatoRapido('marca')">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalNuevaEspecie" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title" style="color: var(--sp-blue);">🐾 Crear Nueva Especie</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">Nombre de la Especie:</label>
+        <input type="text" id="inputNombreEspecie" class="form-control" placeholder="Ej: Reptil">
+        <div id="msgEspecie" class="text-danger small mt-2" style="display:none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-sp" onclick="guardarDatoRapido('especie')">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Función AJAX para crear Marca o Especie
+function guardarDatoRapido(tipo) {
+    let url, inputId, msgId, selectId, modalId;
+
+    if (tipo === 'marca') {
+        url = "{% url 'crear_marca_ajax' %}";
+        inputId = 'inputNombreMarca';
+        msgId = 'msgMarca';
+        selectId = 'id_marca';
+        modalId = 'modalNuevaMarca';
+    } else {
+        url = "{% url 'crear_especie_ajax' %}";
+        inputId = 'inputNombreEspecie';
+        msgId = 'msgEspecie';
+        selectId = 'id_especie';
+        modalId = 'modalNuevaEspecie';
+    }
+
+    const nombre = document.getElementById(inputId).value.trim();
+    const msgDiv = document.getElementById(msgId);
+
+    if (!nombre) {
+        msgDiv.innerText = "El nombre no puede estar vacío.";
+        msgDiv.style.display = "block";
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('nombre', nombre);
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.id) {
+            const select = document.getElementById(selectId);
+            const option = new Option(data.nombre, data.id, true, true);
+            select.add(option);
+
+            msgDiv.style.display = "none";
+            document.getElementById(inputId).value = '';
+            
+            const modalInstance = bootstrap.Modal.getInstance(document.getElementById(modalId));
+            modalInstance.hide();
+        } else {
+            msgDiv.innerText = data.error || "Error al crear.";
+            msgDiv.style.display = "block";
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        msgDiv.innerText = "Error de conexión.";
+        msgDiv.style.display = "block";
+    });
+}
+</script>
+
+<script>
+// Script de Subcategorías (con preservación de valor)
+document.addEventListener("DOMContentLoaded", function () {
+
+  const categoriaSelect = document.getElementById("id_categoria");
+  const subcategoriaSelect = document.getElementById("id_subcategoria");
+
+  if (!categoriaSelect || !subcategoriaSelect) return;
+
+  // Guardamos el valor inicial que trajo Django
+  const subcategoriaInicial = subcategoriaSelect.value;
+
+  function actualizarSubcategorias(categoriaId, valorPreseleccionado = null) {
+    
+    if (!categoriaId) {
+      subcategoriaSelect.innerHTML = '<option value="">Seleccione una subcategoría (opcional)</option>';
+      subcategoriaSelect.disabled = true;
+      return;
+    }
+
+    // Llamada AJAX
+    fetch(`/api/subcategorias/formulario/?categoria_id=${categoriaId}`)
+    .then(r => r.json())
+    .then(data => {
+      // Intentamos usar el valor preseleccionado o el valor actual del select
+      const valorActual = valorPreseleccionado || subcategoriaSelect.value;
+
+      subcategoriaSelect.innerHTML = '<option value="">Seleccione una subcategoría</option>';
+      
+      if(data.subcategorias && data.subcategorias.length > 0){
+          data.subcategorias.forEach(sub => {
+            const option = document.createElement('option');
+            option.value = sub.id;
+            option.textContent = sub.nombre;
+            
+            // Si el ID coincide, lo marcamos seleccionado
+            if (String(sub.id) === String(valorActual)) {
+                option.selected = true;
+            }
+            
+            subcategoriaSelect.appendChild(option);
+          });
+          subcategoriaSelect.disabled = false;
+      } else {
+          subcategoriaSelect.innerHTML = '<option value="">(Sin subcategorías)</option>';
+          subcategoriaSelect.disabled = true;
+      }
+    })
+    .catch(() => {
+      console.error("Error al cargar subcategorías");
+    });
+  }
+
+  // Evento cambio manual
+  categoriaSelect.addEventListener("change", () => {
+    actualizarSubcategorias(categoriaSelect.value);
+  });
+
+  // Al cargar (Modo Edición): Forzar la carga de opciones, pasando el valor inicial para que no se pierda
+  if (categoriaSelect.value) {
+      actualizarSubcategorias(categoriaSelect.value, subcategoriaInicial);
+  }
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const especieSelect = document.getElementById("id_especie");
+    const razaSelect = document.getElementById("id_razas");
+
+    // Si no existen los elementos en el DOM, salimos
+    if (!especieSelect || !razaSelect) return;
+
+    // Guardamos las razas seleccionadas actualmente (útil para el modo Editar)
+    // En un select multiple, 'selectedOptions' nos da lo que ya tiene el producto
+    const razasPreseleccionadas = Array.from(razaSelect.selectedOptions).map(opt => opt.value);
+
+    function actualizarRazas(especieId) {
+        // Limpiamos el select y mostramos "Cargando..."
+        razaSelect.innerHTML = '<option value="" disabled>Cargando razas...</option>';
+        razaSelect.disabled = true;
+
+        if (!especieId) {
+            razaSelect.innerHTML = ''; // Limpiar si no hay especie
+            razaSelect.disabled = true;
+            return;
+        }
+
+        // Llamada AJAX
+        fetch(`/api/razas/?especie_id=${especieId}`)
+            .then(response => response.json())
+            .then(data => {
+                razaSelect.innerHTML = ''; // Limpiar mensaje de carga
+                
+                if (data.razas && data.razas.length > 0) {
+                    data.razas.forEach(raza => {
+                        const option = document.createElement('option');
+                        option.value = raza.id;
+                        option.textContent = raza.nombre;
+
+                        // Si estamos editando y esta raza ya estaba seleccionada, la marcamos
+                        if (razasPreseleccionadas.includes(String(raza.id))) {
+                            option.selected = true;
+                        }
+
+                        razaSelect.appendChild(option);
+                    });
+                    razaSelect.disabled = false;
+                } else {
+                    // Si no hay razas para esa especie, mostramos un mensaje
+                    const option = document.createElement('option');
+                    option.text = "(Sin razas registradas para esta especie)";
+                    razaSelect.add(option);
+                    razaSelect.disabled = true;
+                }
+            })
+            .catch(error => {
+                console.error("Error al cargar razas:", error);
+                razaSelect.innerHTML = '<option value="" disabled>Error al cargar</option>';
+            });
+    }
+
+    // Evento: Cuando el usuario cambia la especie manualmente
+    especieSelect.addEventListener("change", function () {
+        actualizarRazas(this.value);
+    });
+
+    // Al cargar la página (Modo Editar): 
+    // Si ya hay una especie seleccionada, cargamos sus razas correspondientes
+    if (especieSelect.value) {
+        actualizarRazas(especieSelect.value);
+    } else {
+        // Si es producto nuevo, deshabilitamos razas hasta que elija especie
+        razaSelect.innerHTML = '<option value="" disabled>Seleccione una especie primero</option>';
+        razaSelect.disabled = true;
+    }
+});
+</script>
+
+{% endblock %}

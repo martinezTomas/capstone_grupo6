@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/listar_producto.css' %}">
+
+<div class="container my-5">
+
+  <div class="text-center mb-5">
+      <h2 class="fw-bold text-dark mb-2">📦 Gestión de Productos</h2>
+      <p class="text-muted">Administra tu inventario, precios y visibilidad.</p>
+  </div>
+
+  {# ================= MENSAJES DE ESTADO ================= #}
+  {% if messages %}
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-8">
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+            {% endfor %}
+        </div>
+    </div>
+  {% endif %}
+
+  {# ================= BOTÓN FLOTANTE O SUPERIOR ================= #}
+  <div class="d-flex justify-content-end mb-4">
+    <a href="{% url 'crear_producto_admin' %}" class="btn btn-success fw-bold shadow-sm">
+      <i class="fas fa-plus me-2"></i> Nuevo Producto
+    </a>
+  </div>
+
+  {# ================= LISTADO DE PRODUCTOS ================= #}
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+
+    {% for producto in productos %}
+    <div class="col">
+
+      <div class="card h-100 shadow-sm border-0 product-card-admin">
+        
+        <div class="position-absolute top-0 end-0 m-3" style="z-index: 10;">
+            {% if producto.visible %}
+                <span class="badge bg-success shadow-sm">Visible</span>
+            {% else %}
+                <span class="badge bg-secondary shadow-sm">Oculto</span>
+            {% endif %}
+        </div>
+
+        <div class="img-container p-3 text-center bg-light rounded-top">
+            {% if producto.imagen %}
+              <img src="{{ producto.imagen.url }}" 
+                   class="img-fluid" 
+                   alt="{{ producto.nombre }}"
+                   style="height: 180px; object-fit: contain;">
+            {% else %}
+              <img src="{% static 'Img/sin-imagen.jpg' %}" 
+                   class="img-fluid opacity-50" 
+                   alt="Sin imagen"
+                   style="height: 180px; object-fit: contain;">
+            {% endif %}
+        </div>
+
+        <div class="card-body d-flex flex-column">
+
+          <h6 class="card-title fw-bold text-dark mb-2 text-truncate" title="{{ producto.nombre }}">
+            {{ producto.nombre }}
+          </h6>
+
+          <div class="mb-3">
+              {% if producto.en_oferta %}
+                  <small class="text-decoration-line-through text-muted">${{ producto.precio_anterior|floatformat:0|intcomma }}</small>
+                  <p class="text-danger fw-bold fs-5 mb-0">${{ producto.precio|floatformat:0|intcomma }}</p>
+              {% else %}
+                  <p class="text-dark fw-bold fs-5 mb-0">${{ producto.precio|floatformat:0|intcomma }}</p>
+              {% endif %}
+          </div>
+
+          <div class="row g-2 mb-3 small text-muted">
+              <div class="col-6">
+                  <i class="fas fa-boxes me-1"></i> Stock: 
+                  <span class="fw-bold {% if producto.stock < 5 %}text-danger{% else %}text-dark{% endif %}">
+                      {{ producto.stock }}
+                  </span>
+              </div>
+              <div class="col-6 text-end">
+                  <i class="fas fa-weight-hanging me-1"></i> {{ producto.peso_kg }} kg
+              </div>
+          </div>
+
+          <div class="mt-auto d-grid gap-2">
+            
+            <a href="{% url 'modificar_producto_admin' pk=producto.id %}" 
+               class="btn btn-outline-primary btn-sm fw-bold">
+              <i class="fas fa-pencil-alt me-1"></i> Editar
+            </a>
+
+            {% if producto.visible %}
+              <a href="{% url 'eliminar_producto_admin' pk=producto.id %}" 
+                 class="btn btn-outline-danger btn-sm fw-bold">
+                <i class="fas fa-eye-slash me-1"></i> Ocultar
+              </a>
+            {% else %}
+              <a href="{% url 'activar_producto_admin' pk=producto.id %}" 
+                 class="btn btn-outline-success btn-sm fw-bold">
+                <i class="fas fa-eye me-1"></i> Publicar
+              </a>
+            {% endif %}
+
+          </div>
+        </div>
+        
+        <div class="card-footer bg-white border-0 text-center py-2">
+            <small class="text-muted" style="font-size: 0.75rem;">
+                Actualizado: {{ producto.actualizado_en|date:"d M Y" }}
+            </small>
+        </div>
+
+      </div>
+    </div>
+
+    {% empty %}
+      <div class="col-12 text-center py-5">
+        <div class="text-muted mb-3">
+            <i class="fas fa-box-open fa-3x opacity-50"></i>
+        </div>
+        <h5 class="text-muted">No hay productos registrados.</h5>
+        <a href="{% url 'crear_producto_admin' %}" class="btn btn-primary mt-3">Crear el primero</a>
+      </div>
+    {% endfor %}
+
+  </div>
+
+</div>
+
+{% endblock %}
